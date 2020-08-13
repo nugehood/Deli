@@ -20,9 +20,10 @@ public class Shooting : MonoBehaviour
 
     //Don't change value in Editor!
     public int newsPaperLimit;
-    public int newspaperAmmo;
-    int weaponMagazine;
-    
+    public int newspaperAmmo,pistolAmmo,smgAmmo;
+    int fullAmmo;
+
+
 
 
     // Start is called before the first frame update
@@ -44,8 +45,11 @@ public class Shooting : MonoBehaviour
     {
         //Limit how much ammo can hold based on newsPaperLimit(Max Value)
         Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
+        Mathf.Clamp(pistolAmmo, 0, newsPaperLimit);
+        Mathf.Clamp(smgAmmo, 0, newsPaperLimit);
 
-        ammoText.text = newspaperAmmo.ToString()+"/"+newsPaperLimit.ToString();
+        
+
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, 2);
@@ -64,34 +68,48 @@ public class Shooting : MonoBehaviour
           scrollIndex = (scrollIndex - 1);
         }
 
-        Debug.Log(scrollIndex);
+       
         
 
         //Change newspaper speed depending on Index
+        //Shooting when the ammo is greater than 0
         switch (scrollIndex)
         {
             case 0:
                 throwSpeed = 500;
                 newsPaperLimit = 1;
-
+                fullAmmo = newspaperAmmo;
+                if(Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
+                {
+                    Shoot();
+                }
                 
                 break;
             case 1:
                 throwSpeed = 700;
                 newsPaperLimit = 5;
+                fullAmmo = pistolAmmo;
+                if (Input.GetMouseButtonDown(0) && pistolAmmo > 0)
+                {
+                    Shoot();
+                }
+
                 break;
             case 2:
                 throwSpeed = 1000;
                 newsPaperLimit = 10;
+                fullAmmo = smgAmmo;
+                if (Input.GetMouseButtonDown(0) && smgAmmo > 0)
+                {
+                    Shoot();
+                }
+
                 break;
         }
 
-        //Check if newspaper ammo is more than the limit
-        //Then change ammo value to limit
-        if(newspaperAmmo > newsPaperLimit)
-        {
-            newspaperAmmo = newsPaperLimit;
-        }
+        ammoText.text = fullAmmo.ToString()+"/"+newsPaperLimit.ToString();
+
+        
 
         Ray ray;
         ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -106,15 +124,45 @@ public class Shooting : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    //Check if ammo is full
-                    if(newspaperAmmo < newsPaperLimit)
+                    switch (scrollIndex)
                     {
-                        PickAmmo();
-                        Destroy(hit.collider.gameObject);
-                    }
-                    else
-                    {
-                        Debug.Log("Ammo is Full!");
+                        case 0:
+                            if(newspaperAmmo < newsPaperLimit)
+                            {
+                                PickAmmo();
+                                Destroy(hit.collider.gameObject);
+                            }
+
+                            else
+                            {
+                                Debug.Log("Ammo is full!");
+                            }
+                            break;
+
+                        case 1:
+                            if (pistolAmmo < newsPaperLimit)
+                            {
+                                PickAmmo();
+                                Destroy(hit.collider.gameObject);
+                            }
+
+                            else
+                            {
+                                Debug.Log("Ammo is full!");
+                            }
+                            break;
+                        case 2:
+                            if (smgAmmo < newsPaperLimit)
+                            {
+                                PickAmmo();
+                                Destroy(hit.collider.gameObject);
+                            }
+
+                            else
+                            {
+                                Debug.Log("Ammo is full!");
+                            }
+                            break;
                     }
                 }
             }
@@ -123,11 +171,7 @@ public class Shooting : MonoBehaviour
 
 
 
-        //Left mouse clicked
-        if (Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
-        {
-            Shoot();
-        }
+         
 
     }
 
@@ -139,7 +183,23 @@ public class Shooting : MonoBehaviour
         GameObject newObj = (GameObject)Instantiate(newspaper, spawnLocation.position, spawnLocation.rotation);
         newPaper = newObj.GetComponent<Newspaper>();
         newPaper.throwSpeed = throwSpeed;
-        newspaperAmmo -= 1;
+        switch (scrollIndex)
+        {
+            case 0:
+                newspaperAmmo -= 1;
+              
+                break;
+            case 1:
+                pistolAmmo -= 1;
+               
+                break;
+            case 2:
+                smgAmmo -= 1;
+              
+                break;
+        }
+
+        
         
         
     }
@@ -147,7 +207,23 @@ public class Shooting : MonoBehaviour
     //Refill ammo
     public void PickAmmo()
     {
-        newspaperAmmo = newsPaperLimit;
+
+        //Refill which ammo depends on active weapon Index
+        switch (scrollIndex)
+        {
+            case 0:
+                newspaperAmmo += 1;
+                break;
+            case 1:
+                pistolAmmo += 1;
+
+                break;
+            case 2:
+                smgAmmo += 2;
+                break;
+
+        }
+        
        
     }
 }

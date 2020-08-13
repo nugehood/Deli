@@ -1,41 +1,131 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(CharacterController))]
 public class Movement : MonoBehaviour
 {
-    
-    CharacterController characterController;
-    
+    [HideInInspector]
+    public float speed;
 
-    [Tooltip("Set your character Speed")]
-    public float movementSpeed;
+    public float walk_speed = 6.0f;
+    public float run_speed = 10f;
+    public float jumpSpeed = 8.0f;
+    public float gravity = 20.0f;
+    public float runDuration = 100f;
+    public float runRegenTime = 15.0f;
 
-    
+    [Space]
+    public Slider runMeter;
+    public TMP_Text debugRun;
 
 
-    // Start is called before the first frame update
-    void Start()
+    bool canRun = true;
+    bool tryRun = false;
+
+    private Vector3 moveDirection = Vector3.zero;
+    private CharacterController characterController;
+
+    [Space]
+    [Header("Hazardous effect")]
+    public bool bubbleGum, otherHazard;
+    public float slownessDuration = 5f;
+
+    public void Start()
     {
         characterController = GetComponent<CharacterController>();
+        StartCoroutine(energyRun());
+        speed = walk_speed;
     }
+        
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        //Debuggin stuff
+        Debug.Log("Running? "+canRun);
+        Debug.Log("BubbleGum: " + bubbleGum);
+        runMeter.value = runDuration;
+        debugRun.text = runDuration.ToString();
 
-        //Get the Horizontal and Vertical Input value
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        //Check if player is on the ground
+        if (characterController.isGrounded)
+        {
+            //Get the input direction
+            //Transform is now based on the input
+            //moveDirection is multiplied with speed/movement speed
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical"));
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection *= speed;
+            //Jump
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                moveDirection.y = jumpSpeed;
+            }
 
-        //Create new vector3
-        //Add the right/left movement multilpy with x Value
-        //Add the forward movement multiply with the vertical, changing it to z Axis movement
-        Vector3 move = transform.right * x + transform.forward * z;
+            //Running
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                tryRun = true;
+                if (canRun)
+                    speed = run_speed;
+                else if (!canRun)
+                    speed = walk_speed;
+            }
 
-        //Move character
-        characterController.SimpleMove(move * movementSpeed);
+        }
+        //Able to move while on air
+        else
+        {
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), moveDirection.y, Input.GetAxis("Vertical"));
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection.x *= speed;
+            moveDirection.z *= speed;
+        }
 
+        
+
+
+        moveDirection.y -= gravity * Time.deltaTime;
+        characterController.Move(moveDirection * Time.deltaTime);
     }
+
+    //Check if player can run 
+    IEnumerator energyRun()
+    {
+        while (true)
+        {
+            //If player touch bubbleGum
+            //Slowness effect accur
+            while (bubbleGum)
+            {
+                yield return new WaitForSeconds(slownessDuration);
+                bubbleGum = false;
+                speed = 6.0f;
+                run_speed = 10f;
+                jumpSpeed = 8f;
+            }
+            if (tryRun)
+            {
+                while (canRun)
+                {
+                    //While running start duration for running
+                    //Then Player can't run
+                    yield return new WaitForSeconds(runDuration);
+                    canRun = false;
+                }
+                while (!canRun)
+                {
+                    //Regen fill up energy
+                    //If energy is refill then canRun
+                    yield return new WaitForSeconds(runRegenTime);
+                    canRun = true;
+                }
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
 }
