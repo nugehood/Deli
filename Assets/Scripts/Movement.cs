@@ -10,17 +10,14 @@ public class Movement : MonoBehaviour
     [HideInInspector]
     public float speed;
 
+    [Header("Basic Value")]
     public float walk_speed = 6.0f;
     public float run_speed = 10f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     public float runDuration = 100f;
     public float runRegenTime = 15.0f;
-
-    [Space]
     public Slider runMeter;
-    public TMP_Text debugRun;
-
 
     bool canRun = true;
     bool tryRun = false;
@@ -28,10 +25,15 @@ public class Movement : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController characterController;
 
-    [Space]
     [Header("Hazardous effect")]
-    public bool bubbleGum, otherHazard;
+    public bool otherHazard;
+    public bool bubbleGum;
     public float slownessDuration = 5f;
+
+    [Header("Bullet Time")]
+    public float worldTime = 1f;
+    public bool isBulletTime;
+    public float bulletTimeDuration = 5f;
 
     public void Start()
     {
@@ -44,10 +46,10 @@ public class Movement : MonoBehaviour
     private void Update()
     {
         //Debuggin stuff
-        Debug.Log("Running? "+canRun);
-        Debug.Log("BubbleGum: " + bubbleGum);
-        runMeter.value = runDuration;
-        debugRun.text = runDuration.ToString();
+        //Debug.Log("Running? "+canRun);
+        //Debug.Log("BubbleGum: " + bubbleGum);
+        //runMeter.value = runDuration;
+        Debug.Log("TimeScale: " + worldTime);
 
         //Check if player is on the ground
         if (characterController.isGrounded)
@@ -72,6 +74,12 @@ public class Movement : MonoBehaviour
                     speed = run_speed;
                 else if (!canRun)
                     speed = walk_speed;
+            }
+
+            //Entered bullet time
+            if (isBulletTime)
+            {
+                Time.timeScale = worldTime;
             }
 
         }
@@ -105,6 +113,17 @@ public class Movement : MonoBehaviour
                 speed = 6.0f;
                 run_speed = 10f;
                 jumpSpeed = 8f;
+            }
+
+            //While player is in bullet time
+            //Countdown with bulletTimeDuration
+            //Then back to normal
+            while (isBulletTime)
+            {
+                yield return new WaitForSeconds(bulletTimeDuration);
+                isBulletTime = false;
+                Time.timeScale = 1;
+
             }
             if (tryRun)
             {

@@ -14,8 +14,8 @@ public class Shooting : MonoBehaviour
 
     public TMP_Text ammoText;
     
-
-    int scrollIndex;
+    [HideInInspector]
+    public int scrollIndex;
     float throwSpeed;
 
     //Don't change value in Editor!
@@ -44,9 +44,9 @@ public class Shooting : MonoBehaviour
     void Update()
     {
         //Limit how much ammo can hold based on newsPaperLimit(Max Value)
-        Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
-        Mathf.Clamp(pistolAmmo, 0, newsPaperLimit);
-        Mathf.Clamp(smgAmmo, 0, newsPaperLimit);
+        newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
+        pistolAmmo = Mathf.Clamp(pistolAmmo, 0, newsPaperLimit);
+        smgAmmo = Mathf.Clamp(smgAmmo, 0, newsPaperLimit);
 
         
 
