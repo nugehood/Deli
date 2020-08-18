@@ -19,7 +19,7 @@ public class bulletTimeScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerMovement.isBulletTime = true;
-            playerMovement.worldTime = slowmoTime;
+            playerMovement.worldTimes = slowmoTime;
             Destroy(gameObject);
         }
     }

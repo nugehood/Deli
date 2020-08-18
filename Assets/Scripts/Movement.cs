@@ -31,12 +31,14 @@ public class Movement : MonoBehaviour
     public float slownessDuration = 5f;
 
     [Header("Bullet Time")]
-    public float worldTime = 1f;
+    public float worldTimes = 1f;
     public bool isBulletTime;
     public float bulletTimeDuration = 5f;
+    currWorldTime WorldTime;
 
     public void Start()
     {
+        WorldTime = GameObject.FindGameObjectWithTag("time").GetComponent<currWorldTime>();
         characterController = GetComponent<CharacterController>();
         StartCoroutine(energyRun());
         speed = walk_speed;
@@ -49,7 +51,6 @@ public class Movement : MonoBehaviour
         //Debug.Log("Running? "+canRun);
         //Debug.Log("BubbleGum: " + bubbleGum);
         //runMeter.value = runDuration;
-        Debug.Log("TimeScale: " + worldTime);
 
         //Check if player is on the ground
         if (characterController.isGrounded)
@@ -79,7 +80,7 @@ public class Movement : MonoBehaviour
             //Entered bullet time
             if (isBulletTime)
             {
-                Time.timeScale = worldTime;
+                WorldTime.worldTime = worldTimes;
             }
 
         }
@@ -122,7 +123,7 @@ public class Movement : MonoBehaviour
             {
                 yield return new WaitForSeconds(bulletTimeDuration);
                 isBulletTime = false;
-                Time.timeScale = 1;
+                WorldTime.worldTime = 1;
 
             }
             if (tryRun)
