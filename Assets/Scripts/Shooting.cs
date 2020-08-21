@@ -18,8 +18,15 @@ public class Shooting : MonoBehaviour
     public int scrollIndex;
     float throwSpeed;
 
-    //Don't change value in Editor!
+    [Header("Weapons Component")]
+    public GameObject[] Weapons;
+    public Image weaponIMG;
+    public Sprite[] weaponsIcon;
+
+  
+    [HideInInspector]
     public int newsPaperLimit;
+    [HideInInspector]
     public int newspaperAmmo,pistolAmmo,smgAmmo;
     int fullAmmo;
 
@@ -68,6 +75,11 @@ public class Shooting : MonoBehaviour
           scrollIndex = (scrollIndex - 1);
         }
 
+        weaponIMG.sprite = weaponsIcon[scrollIndex];
+        
+
+        
+
        
         
 
@@ -79,6 +91,11 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 500;
                 newsPaperLimit = 1;
                 fullAmmo = newspaperAmmo;
+
+                Weapons[0].SetActive(true);
+                Weapons[1].SetActive(false);
+                Weapons[2].SetActive(false);
+          
                 if(Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
                 {
                     Shoot();
@@ -89,6 +106,11 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 700;
                 newsPaperLimit = 5;
                 fullAmmo = pistolAmmo;
+
+                Weapons[0].SetActive(false);
+                Weapons[1].SetActive(true);
+                Weapons[2].SetActive(false);
+
                 if (Input.GetMouseButtonDown(0) && pistolAmmo > 0)
                 {
                     Shoot();
@@ -99,6 +121,11 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 1000;
                 newsPaperLimit = 10;
                 fullAmmo = smgAmmo;
+
+                Weapons[0].SetActive(false);
+                Weapons[1].SetActive(false);
+                Weapons[2].SetActive(true);
+
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0)
                 {
                     Shoot();
