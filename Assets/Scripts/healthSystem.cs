@@ -16,6 +16,8 @@ public class healthSystem : MonoBehaviour
 
     currWorldTime WorldTime;
 
+    MouseLook mouseMovement;
+
     [Tooltip("Maximum Health for the player also Starting value for health")]
     public int maxHealth;
 
@@ -42,6 +44,8 @@ public class healthSystem : MonoBehaviour
 
         WorldTime = GameObject.FindGameObjectWithTag("time").GetComponent<currWorldTime>();
 
+        mouseMovement = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>();
+
         //Set all images sprite to Healthy
         for(int i = 0;i <= healthImage.Length; i++)
         {
@@ -58,7 +62,7 @@ public class healthSystem : MonoBehaviour
         //Limit the minimum and maximum health
         health = Mathf.Clamp(health, 0, maxHealth);
 
-        Debug.Log("Available: " + health);
+        //Debug.Log("Available: " + health);
 
         if(health <= 0)
         {
@@ -116,6 +120,9 @@ public class healthSystem : MonoBehaviour
         playerPause.ablePause = false;
         gameOverUI.SetActive(true);
 
+        mouseMovement.ableToZoom = false;
+        
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -128,6 +135,9 @@ public class healthSystem : MonoBehaviour
         WorldTime.worldTime = 1;
 
         health += 3;
+
+        mouseMovement.ableToZoom = true;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         playerPause.ablePause = true;

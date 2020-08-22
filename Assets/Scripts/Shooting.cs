@@ -13,7 +13,7 @@ public class Shooting : MonoBehaviour
     Newspaper newPaper;
 
     public TMP_Text ammoText;
-    
+
     [HideInInspector]
     public int scrollIndex;
     float throwSpeed;
@@ -25,7 +25,7 @@ public class Shooting : MonoBehaviour
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
 
-  
+
     [HideInInspector]
     public int newsPaperLimit;
     [HideInInspector]
@@ -57,12 +57,11 @@ public class Shooting : MonoBehaviour
         pistolAmmo = Mathf.Clamp(pistolAmmo, 0, newsPaperLimit);
         smgAmmo = Mathf.Clamp(smgAmmo, 0, newsPaperLimit);
 
-        
+
 
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
-        Debug.Log("Curr i: " + i);
 
         //Scroll mouse up
         //Increase index Value
@@ -82,7 +81,7 @@ public class Shooting : MonoBehaviour
 
         //Weapon IMG changes with the scrollIndex
         weaponIMG.sprite = weaponsIcon[scrollIndex];
-        
+
 
         //Change newspaper speed depending on Index
         //Shooting when the ammo is greater than 0
@@ -91,12 +90,12 @@ public class Shooting : MonoBehaviour
             case 0:
                 throwSpeed = 500;
                 newsPaperLimit = 1;
-                fullAmmo = newspaperAmmo; 
+                fullAmmo = newspaperAmmo;
                 if(Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
                 {
                     Shoot();
                 }
-                
+
                 break;
             case 1:
                 throwSpeed = 700;
@@ -129,7 +128,7 @@ public class Shooting : MonoBehaviour
         //Current ammo and the limit of each magazine
         ammoText.text = fullAmmo.ToString()+"/"+newsPaperLimit.ToString();
 
-        
+
 
         Ray ray;
         ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -191,7 +190,7 @@ public class Shooting : MonoBehaviour
 
 
 
-         
+
 
     }
 
@@ -226,21 +225,21 @@ public class Shooting : MonoBehaviour
         {
             case 0:
                 newspaperAmmo -= 1;
-              
+
                 break;
             case 1:
                 pistolAmmo -= 1;
-               
+
                 break;
             case 2:
                 smgAmmo -= 1;
-              
+
                 break;
         }
 
-        
-        
-        
+
+
+
     }
 
     //Refill ammo
@@ -262,7 +261,7 @@ public class Shooting : MonoBehaviour
                 break;
 
         }
-        
-       
+
+
     }
 }

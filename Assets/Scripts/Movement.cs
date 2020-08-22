@@ -18,6 +18,7 @@ public class Movement : MonoBehaviour
     public float runDuration = 100f;
     public float runRegenTime = 15.0f;
     public Slider runMeter;
+    float runDurationRecorder;
 
     bool canRun = true;
     bool tryRun = false;
@@ -42,15 +43,24 @@ public class Movement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         StartCoroutine(energyRun());
         speed = walk_speed;
+        runDurationRecorder = 5;
     }
         
 
     private void Update()
     {
+
+
         //Debuggin stuff
         //Debug.Log("Running? "+canRun);
         //Debug.Log("BubbleGum: " + bubbleGum);
-        //runMeter.value = runDuration;
+
+        runDurationRecorder = Mathf.Clamp(runDurationRecorder, 0f, runDuration);
+
+        Debug.Log("Ok sayang: " + runDurationRecorder);
+
+        runMeter.value = runDurationRecorder;
+
 
         //Check if player is on the ground
         if (characterController.isGrounded)
@@ -58,7 +68,7 @@ public class Movement : MonoBehaviour
             //Get the input direction
             //Transform is now based on the input
             //moveDirection is multiplied with speed/movement speed
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"),0 , Input.GetAxis("Vertical"));
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= speed;
             //Jump
@@ -72,10 +82,32 @@ public class Movement : MonoBehaviour
             {
                 tryRun = true;
                 if (canRun)
+                {
                     speed = run_speed;
+                    runDurationRecorder -= Time.deltaTime;
+                }
+
                 else if (!canRun)
+                {
+                   
                     speed = walk_speed;
+                    runDurationRecorder += Time.deltaTime;
+
+                }
             }
+            else
+            {
+                speed = walk_speed;
+                runDurationRecorder += Time.deltaTime;
+
+            }
+
+           
+           
+        
+
+
+           
 
             //Entered bullet time
             if (isBulletTime)
@@ -132,6 +164,7 @@ public class Movement : MonoBehaviour
                 {
                     //While running start duration for running
                     //Then Player can't run
+                    
                     yield return new WaitForSeconds(runDuration);
                     canRun = false;
                 }
@@ -139,9 +172,19 @@ public class Movement : MonoBehaviour
                 {
                     //Regen fill up energy
                     //If energy is refill then canRun
+                    
                     yield return new WaitForSeconds(runRegenTime);
                     canRun = true;
                 }
+            }
+
+            while (!canRun)
+            {
+                //Regen fill up energy
+                //If energy is refill then canRun
+
+                yield return new WaitForSeconds(runRegenTime);
+                canRun = true;
             }
 
             yield return new WaitForEndOfFrame();
