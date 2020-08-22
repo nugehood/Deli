@@ -54,11 +54,12 @@ public class Movement : MonoBehaviour
         //Debuggin stuff
         //Debug.Log("Running? "+canRun);
         //Debug.Log("BubbleGum: " + bubbleGum);
-
+        //runMeter value limit(runDurationRecorder only appear as value for increasing and decreasing slider value)
         runDurationRecorder = Mathf.Clamp(runDurationRecorder, 0f, runDuration);
 
         Debug.Log("Ok sayang: " + runDurationRecorder);
-
+        
+        //runMeter is equal to runDurationRecorder
         runMeter.value = runDurationRecorder;
 
 
