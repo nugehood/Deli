@@ -14,6 +14,7 @@ public class optionScript : MonoBehaviour
     [Header("Mouse Properties")]
     public MouseLook mouseMovement;
     public Slider mouseSlider;
+    
 
 
     [Header("Audio Properties")]
@@ -29,6 +30,11 @@ public class optionScript : MonoBehaviour
 
     [HideInInspector]
     public string screenRes;
+
+    private void Awake()
+    {
+        mouseMovement.ableToZoom = false;
+    }
 
     void Start()
     {
@@ -120,6 +126,8 @@ public class optionScript : MonoBehaviour
 
         //Able to use phone
         pauseScript.ablePause = true;
+
+        mouseMovement.ableToZoom = true;
 
         //Revert back to normal time
         WorldTime.worldTime = 1;

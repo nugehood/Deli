@@ -8,6 +8,8 @@ public class MouseLook : MonoBehaviour
 
     public float mouseSensitivity;
 
+    public bool ableToZoom = true;
+
     float xRotation = 0;
 
     //Less value on zoomMax is to zoom IN
@@ -50,7 +52,7 @@ public class MouseLook : MonoBehaviour
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
         //Zoom Camera
-        if(Input.GetMouseButton(1))
+        if(Input.GetMouseButton(1)&&ableToZoom)
         {
             zoomValue--;
         }

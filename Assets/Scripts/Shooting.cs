@@ -17,8 +17,10 @@ public class Shooting : MonoBehaviour
     [HideInInspector]
     public int scrollIndex;
     float throwSpeed;
+    int i;
 
     [Header("Weapons Component")]
+    public int howMuchWeapon;
     public GameObject[] Weapons;
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
@@ -59,28 +61,27 @@ public class Shooting : MonoBehaviour
 
 
         //Limit the scrollValue/Number of availabe weapons
-        scrollIndex = Mathf.Clamp(scrollIndex, 0, 2);
+        scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
+        Debug.Log("Curr i: " + i);
 
         //Scroll mouse up
         //Increase index Value
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-          scrollIndex = (scrollIndex+ 1);
+            scrollIndex = (scrollIndex+ 1);
+            nextWeapon();
         }
 
         //Scroll mouse down
         //Decrease index Value
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-          scrollIndex = (scrollIndex - 1);
+            scrollIndex = (scrollIndex - 1);
+            prevWeapon();
         }
 
+        //Weapon IMG changes with the scrollIndex
         weaponIMG.sprite = weaponsIcon[scrollIndex];
-        
-
-        
-
-       
         
 
         //Change newspaper speed depending on Index
@@ -90,12 +91,7 @@ public class Shooting : MonoBehaviour
             case 0:
                 throwSpeed = 500;
                 newsPaperLimit = 1;
-                fullAmmo = newspaperAmmo;
-
-                Weapons[0].SetActive(true);
-                Weapons[1].SetActive(false);
-                Weapons[2].SetActive(false);
-          
+                fullAmmo = newspaperAmmo; 
                 if(Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
                 {
                     Shoot();
@@ -106,11 +102,6 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 700;
                 newsPaperLimit = 5;
                 fullAmmo = pistolAmmo;
-
-                Weapons[0].SetActive(false);
-                Weapons[1].SetActive(true);
-                Weapons[2].SetActive(false);
-
                 if (Input.GetMouseButtonDown(0) && pistolAmmo > 0)
                 {
                     Shoot();
@@ -121,11 +112,6 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 1000;
                 newsPaperLimit = 10;
                 fullAmmo = smgAmmo;
-
-                Weapons[0].SetActive(false);
-                Weapons[1].SetActive(false);
-                Weapons[2].SetActive(true);
-
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0)
                 {
                     Shoot();
@@ -134,6 +120,13 @@ public class Shooting : MonoBehaviour
                 break;
         }
 
+        //Only newspaper(Not weapons) that can refill/reload!
+        if(Input.GetKeyDown(KeyCode.R)&&newspaperAmmo <= 0)
+        {
+            newspaperAmmo += 1;
+        }
+
+        //Current ammo and the limit of each magazine
         ammoText.text = fullAmmo.ToString()+"/"+newsPaperLimit.ToString();
 
         
@@ -199,6 +192,25 @@ public class Shooting : MonoBehaviour
 
 
          
+
+    }
+
+    //Next weapons in the array
+    //Active the next weapon object (i + 1) without changing the value
+    //Then the current index which is i(Still the original value, not yet being added), will get deactive
+    //And increase the i index and the it will change it's value! (Same also applies for the prevWeapon)
+    public void nextWeapon()
+    {
+        Weapons[i + 1].SetActive(true);
+        Weapons[i].SetActive(false);
+        i+=1;
+    }
+
+    public void prevWeapon()
+    {
+        Weapons[i - 1].SetActive(true);
+        Weapons[i].SetActive(false);
+        i-=1;
 
     }
 
