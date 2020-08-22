@@ -59,7 +59,8 @@ public class Movement : MonoBehaviour
         runDurationRecorder = Mathf.Clamp(runDurationRecorder, 0f, runDuration);
 
         Debug.Log("Ok sayang: " + runDurationRecorder);
-
+        
+        //runMeter is equal to runDurationRecorder
         runMeter.value = runDurationRecorder;
 
 
