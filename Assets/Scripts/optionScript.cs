@@ -11,6 +11,8 @@ public class optionScript : MonoBehaviour
 
     public currWorldTime WorldTime;
 
+    public bool playerAvailable;
+
     [Header("Mouse Properties")]
     public MouseLook mouseMovement;
     public Slider mouseSlider;
@@ -33,7 +35,10 @@ public class optionScript : MonoBehaviour
 
     private void Awake()
     {
-        mouseMovement.ableToZoom = false;
+        if (playerAvailable)
+        {
+            mouseMovement.ableToZoom = false;
+        }
     }
 
     void Start()
@@ -107,8 +112,17 @@ public class optionScript : MonoBehaviour
         //Close the optionMenu
         this.gameObject.SetActive(false);
 
-        //Allow camera movement
-        mouseMovement.enabled = true;
+        
+
+        //Unmute audio
+        mixer.SetFloat("masterVol", 0);
+
+        if (playerAvailable)
+        {
+            pauseScript.isPaused = false;
+
+            //Allow camera movement
+            mouseMovement.enabled = true;
 
        
             //Don't show cursor
@@ -116,21 +130,16 @@ public class optionScript : MonoBehaviour
 
             //Lock cursor
             Cursor.lockState = CursorLockMode.Locked;
-        
 
-        //Unmute audio
-        mixer.SetFloat("masterVol", 0);
+            //Able to use phone
+            pauseScript.ablePause = true;
 
+            mouseMovement.ableToZoom = true;
 
-        pauseScript.isPaused = false;
+            //Revert back to normal time
+            WorldTime.worldTime = 1;
 
-        //Able to use phone
-        pauseScript.ablePause = true;
-
-        mouseMovement.ableToZoom = true;
-
-        //Revert back to normal time
-        WorldTime.worldTime = 1;
+        }
     }
 
     
@@ -142,8 +151,11 @@ public class optionScript : MonoBehaviour
 
         screenResIndex = 0;
         fullscreenToggle.isOn = true;
-        mouseMovement.mouseSensitivity= 150;
-        mouseSlider.value = 150;
+        if (playerAvailable)
+        {
+            mouseMovement.mouseSensitivity = 150;
+            mouseSlider.value = 150;
+        }
 
     }
 }

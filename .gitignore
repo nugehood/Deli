@@ -66,3 +66,4 @@ crashlytics-build.properties
 *.asset
 *.asset
 Assets/Fonts/Luna SDF.asset
+*.controller

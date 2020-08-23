@@ -9746,7 +9746,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 684969552}
         m_TargetAssemblyTypeName: PauseScript, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: QuitMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9991,7 +9991,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 684969552}
         m_TargetAssemblyTypeName: PauseScript, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: QuitMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10631,6 +10631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseScript: {fileID: 684969552}
   WorldTime: {fileID: 671149662}
+  playerAvailable: 1
   mouseMovement: {fileID: 963194229}
   mouseSlider: {fileID: 1987096989}
   mixer: {fileID: 24100000, guid: 2cdcbd21d404a544a9df9937ef760216, type: 2}
@@ -11586,7 +11587,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16562
+  m_Name: pb_Mesh37712
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

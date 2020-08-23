@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class PauseScript : MonoBehaviour
 {
@@ -78,12 +79,13 @@ public class PauseScript : MonoBehaviour
         WorldTime.worldTime = 1;
     }
 
-    //Close application/game
-    //Return to desktop
-    public void QuitGame()
+    //Return to Menu
+    public void QuitMenu()
     {
-        Application.Quit();
+        SceneManager.LoadScene("MainMenu");
     }
+
+
 
 
 
