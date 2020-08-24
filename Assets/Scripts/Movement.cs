@@ -58,8 +58,7 @@ public class Movement : MonoBehaviour
         //runMeter value limit(runDurationRecorder only appear as value for increasing and decreasing slider value)
         runDurationRecorder = Mathf.Clamp(runDurationRecorder, 0f, runDuration);
 
-        Debug.Log("Ok sayang: " + runDurationRecorder);
-        
+       
         //runMeter is equal to runDurationRecorder
         runMeter.value = runDurationRecorder;
 

@@ -11,8 +11,6 @@ public class optionScript : MonoBehaviour
 
     public currWorldTime WorldTime;
 
-    public bool playerAvailable;
-
     [Header("Mouse Properties")]
     public MouseLook mouseMovement;
     public Slider mouseSlider;
@@ -35,7 +33,7 @@ public class optionScript : MonoBehaviour
 
     private void Awake()
     {
-        if (playerAvailable)
+        if (mouseMovement)
         {
             mouseMovement.ableToZoom = false;
         }
@@ -117,7 +115,7 @@ public class optionScript : MonoBehaviour
         //Unmute audio
         mixer.SetFloat("masterVol", 0);
 
-        if (playerAvailable)
+        if (mouseMovement&&pauseScript&&WorldTime)
         {
             pauseScript.isPaused = false;
 
@@ -151,7 +149,7 @@ public class optionScript : MonoBehaviour
 
         screenResIndex = 0;
         fullscreenToggle.isOn = true;
-        if (playerAvailable)
+        if (mouseMovement && pauseScript && WorldTime)
         {
             mouseMovement.mouseSensitivity = 150;
             mouseSlider.value = 150;

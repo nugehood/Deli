@@ -67,3 +67,6 @@ crashlytics-build.properties
 *.asset
 Assets/Fonts/Luna SDF.asset
 *.controller
+*.obj
+*.prefab
+*.unity
