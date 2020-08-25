@@ -21,6 +21,7 @@ public class bulletTimeScript : MonoBehaviour
             playerMovement.isBulletTime = true;
             playerMovement.worldTimes = slowmoTime;
             Destroy(gameObject);
+
         }
     }
 }

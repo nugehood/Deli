@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,11 +26,9 @@ public class Shooting : MonoBehaviour
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
 
-
     [HideInInspector]
-    public int newsPaperLimit;
-    [HideInInspector]
-    public int newspaperAmmo,pistolAmmo,smgAmmo;
+    public int newsPaperLimit, pistolLimit, smgLimit;
+    public int newspaperAmmo, pistolAmmo, smgAmmo;
     int fullAmmo;
 
 
@@ -46,7 +45,9 @@ public class Shooting : MonoBehaviour
                 newsPaperLimit = 1;
                 break;
         }
-        newspaperAmmo = newsPaperLimit;
+
+        newspaperAmmo = newsPaperLimit; 
+
     }
 
     // Update is called once per frame
@@ -54,20 +55,20 @@ public class Shooting : MonoBehaviour
     {
         //Limit how much ammo can hold based on newsPaperLimit(Max Value)
         newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
-        pistolAmmo = Mathf.Clamp(pistolAmmo, 0, newsPaperLimit);
-        smgAmmo = Mathf.Clamp(smgAmmo, 0, newsPaperLimit);
+        pistolAmmo = Mathf.Clamp(pistolAmmo, 0, pistolLimit);
+        smgAmmo = Mathf.Clamp(smgAmmo, 0, smgLimit);
 
 
 
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
-
+       
         //Scroll mouse up
         //Increase index Value
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            scrollIndex = (scrollIndex+ 1);
+            scrollIndex += 1;
             nextWeapon();
         }
 
@@ -75,7 +76,7 @@ public class Shooting : MonoBehaviour
         //Decrease index Value
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            scrollIndex = (scrollIndex - 1);
+            scrollIndex -= 1;
             prevWeapon();
         }
 
@@ -91,7 +92,9 @@ public class Shooting : MonoBehaviour
                 throwSpeed = 500;
                 newsPaperLimit = 1;
                 fullAmmo = newspaperAmmo;
-                if(Input.GetMouseButtonDown(0)&&newspaperAmmo > 0)
+                ammoText.text = fullAmmo.ToString() + "/" + newsPaperLimit.ToString();
+                Debug.Log("Newspaper: " + newspaperAmmo);
+                if (Input.GetMouseButtonDown(0) && newspaperAmmo > 0)
                 {
                     Shoot();
                 }
@@ -99,8 +102,10 @@ public class Shooting : MonoBehaviour
                 break;
             case 1:
                 throwSpeed = 700;
-                newsPaperLimit = 5;
+                pistolLimit = 5;
                 fullAmmo = pistolAmmo;
+                ammoText.text = fullAmmo.ToString() + "/" + pistolLimit.ToString();
+                Debug.Log("Pistol: " + pistolAmmo);
                 if (Input.GetMouseButtonDown(0) && pistolAmmo > 0)
                 {
                     Shoot();
@@ -109,8 +114,11 @@ public class Shooting : MonoBehaviour
                 break;
             case 2:
                 throwSpeed = 1000;
-                newsPaperLimit = 10;
+                smgLimit = 10;
                 fullAmmo = smgAmmo;
+                ammoText.text = fullAmmo.ToString() + "/" + smgLimit.ToString();
+                Debug.Log("Smg: " + smgAmmo);
+
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0)
                 {
                     Shoot();
@@ -119,14 +127,23 @@ public class Shooting : MonoBehaviour
                 break;
         }
 
-        //Only newspaper(Not weapons) that can refill/reload!
-        if(Input.GetKeyDown(KeyCode.R)&&newspaperAmmo <= 0)
+
+        //Reloading newspaper
+        //Only the common first newspaper can acces this!
+        if (Input.GetKeyDown(KeyCode.R)&&newspaperAmmo <= newsPaperLimit)
         {
             newspaperAmmo += 1;
         }
+        else
+        {
+            Debug.Log("Ammo is already FULL!");
+        }
 
-        //Current ammo and the limit of each magazine
-        ammoText.text = fullAmmo.ToString()+"/"+newsPaperLimit.ToString();
+
+    
+
+        
+       
 
 
 
@@ -136,7 +153,7 @@ public class Shooting : MonoBehaviour
         RaycastHit hit;
 
 
-        if(Physics.Raycast(ray, out hit, 5))
+        if (Physics.Raycast(ray, out hit, 5))
         {
             //If raycast enter obj with ammo Tag
             if (hit.collider.gameObject.CompareTag("ammo"))
@@ -146,7 +163,7 @@ public class Shooting : MonoBehaviour
                     switch (scrollIndex)
                     {
                         case 0:
-                            if(newspaperAmmo < newsPaperLimit)
+                            if (newspaperAmmo < newsPaperLimit)
                             {
                                 PickAmmo();
                                 Destroy(hit.collider.gameObject);
@@ -159,7 +176,7 @@ public class Shooting : MonoBehaviour
                             break;
 
                         case 1:
-                            if (pistolAmmo < newsPaperLimit)
+                            if (pistolAmmo < pistolLimit)
                             {
                                 PickAmmo();
                                 Destroy(hit.collider.gameObject);
@@ -171,7 +188,7 @@ public class Shooting : MonoBehaviour
                             }
                             break;
                         case 2:
-                            if (smgAmmo < newsPaperLimit)
+                            if (smgAmmo < smgLimit)
                             {
                                 PickAmmo();
                                 Destroy(hit.collider.gameObject);
@@ -198,20 +215,23 @@ public class Shooting : MonoBehaviour
     //Active the next weapon object (i + 1) without changing the value
     //Then the current index which is i(Still the original value, not yet being added), will get deactive
     //And increase the i index and the it will change it's value! (Same also applies for the prevWeapon)
+
+
     public void nextWeapon()
     {
         Weapons[i + 1].SetActive(true);
         Weapons[i].SetActive(false);
-        i+=1;
+        i += 1;
     }
 
     public void prevWeapon()
     {
         Weapons[i - 1].SetActive(true);
         Weapons[i].SetActive(false);
-        i-=1;
+        i -= 1;
 
     }
+  
 
     public void Shoot()
     {

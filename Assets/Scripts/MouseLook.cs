@@ -10,6 +10,8 @@ public class MouseLook : MonoBehaviour
 
     public bool ableToZoom = true;
 
+    public Animator[] weaponsAnimator;
+
     float xRotation = 0;
 
     //Less value on zoomMax is to zoom IN
@@ -63,6 +65,12 @@ public class MouseLook : MonoBehaviour
 
         //Change the value of camera fieldOfView to zoomValue
         cam.fieldOfView = zoomValue;
+
+        //Zoom animation
+        for(int i  = 0;i <= weaponsAnimator.Length;i++)
+        {
+            weaponsAnimator[i].SetFloat("zoom",zoomValue);
+        }
 
         
 

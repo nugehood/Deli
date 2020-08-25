@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 public class houseStates : MonoBehaviour
 {
-    public int houseNumber;
     Transform housePosition;
 
+    [HideInInspector]
     public Toggle on, off;
+
     [Space]
+    public bool activeHouse;
+    public int houseNumber;
     public houseDelivered[] deliveredArea;
     public houseFailed[] failedArea;
 
@@ -25,43 +28,40 @@ public class houseStates : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        //Check if one of the paper is delivered
-        foreach(houseDelivered delivered in deliveredArea)
+        if (activeHouse)
         {
-            //Check if one of the paper is failed
-            foreach(houseFailed failed in failedArea)
+            //Check if one of the paper is delivered
+            foreach (houseDelivered delivered in deliveredArea)
             {
-                //Entered deliver area
-                if (delivered.isDelivered&&!failed.isFailed)
+                //Check if one of the paper is failed
+                foreach (houseFailed failed in failedArea)
                 {
-                    houseComplete = true;
-                }
+                    //Entered deliver area
+                    if (delivered.isDelivered && !failed.isFailed)
+                    {
+                        houseComplete = true;
+                    }
 
-                //Leaving deliver area
-                else if (!delivered.isDelivered)
-                {
-                    houseComplete = false;
-                }
+                    //Leaving deliver area
+                    else if (!delivered.isDelivered)
+                    {
+                        houseComplete = false;
+                    }
 
-                //Failed delivery
-                else if(failed.isFailed)
-                {
-                    houseComplete = false;
-                    houseFailed = true;
+                    //Failed delivery
+                    else if (failed.isFailed)
+                    {
+                        houseComplete = false;
+                        houseFailed = true;
+                    }
+
                 }
-    
             }
         }
 
 
-        //Debug stuff!
-        on.isOn = houseComplete;
-        off.isOn = houseFailed;
-
-        Debug.Log("complete: " + houseComplete);
-        Debug.Log("failed: " + houseFailed);
-       
+      
+   
            
 
         
