@@ -7,6 +7,7 @@ public class houseDelivered : MonoBehaviour
 {
 
     public bool isDelivered;
+    Rigidbody[] rb;
 
     
 
@@ -15,6 +16,11 @@ public class houseDelivered : MonoBehaviour
         if (collision.gameObject.CompareTag("newspaper"))
         {
             isDelivered = true;
+            rb = collision.collider.GetComponents<Rigidbody>();
+            for(int i = 0; i <= rb.Length; i++)
+            {
+                rb[i].isKinematic = true;
+            }
         }
     }
 

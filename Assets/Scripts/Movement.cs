@@ -20,11 +20,13 @@ public class Movement : MonoBehaviour
     public Slider runMeter;
     float runDurationRecorder;
 
-    bool canRun = true;
-    bool tryRun = false;
+    [HideInInspector]
+    public bool canRun = true;
+    public bool tryRun = false;
 
-    private Vector3 moveDirection = Vector3.zero;
-    private CharacterController characterController;
+    [HideInInspector]
+    public Vector3 moveDirection = Vector3.zero;
+    public CharacterController characterController;
 
     [Header("Hazardous effect")]
     public bool otherHazard;

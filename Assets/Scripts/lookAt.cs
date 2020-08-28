@@ -4,23 +4,12 @@ using UnityEngine;
 
 public class lookAt : MonoBehaviour
 {
-    public Transform housetest;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Transform nextHouse;
 
     public void LateUpdate()
     {
-        Vector3 targetPosition = new Vector3(housetest.position.x, transform.position.y, housetest.position.z);
+        Vector3 targetPosition = new Vector3(nextHouse.position.x, transform.position.y, nextHouse.position.z);
 
-        transform.LookAt(housetest);
+        transform.LookAt(nextHouse);
     }
 }

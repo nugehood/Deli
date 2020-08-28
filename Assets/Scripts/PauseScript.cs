@@ -10,6 +10,7 @@ public class PauseScript : MonoBehaviour
     public GameObject pauseComponent;
     public bool isPaused, ablePause;
     public AudioMixer mixer;
+    Shooting playerShoot;
     MouseLook mouseMovement;
     currWorldTime WorldTime;
 
@@ -19,6 +20,7 @@ public class PauseScript : MonoBehaviour
         ablePause = true;
         WorldTime = GameObject.FindGameObjectWithTag("time").GetComponent<currWorldTime>();
         mouseMovement = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>();
+        playerShoot = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Shooting>();
     }
 
     // Update is called once per frame
@@ -49,8 +51,12 @@ public class PauseScript : MonoBehaviour
 
         mouseMovement.ableToZoom = false;
 
+        playerShoot.ableToScroll = false;
+
+        playerShoot.ableToShoot = false;
+
         //Mute audio
-        mixer.SetFloat("masterVol", -80);
+        mixer.SetFloat("MusicVol", -80);
 
         pauseComponent.SetActive(true);
 
@@ -66,10 +72,14 @@ public class PauseScript : MonoBehaviour
 
         mouseMovement.ableToZoom = true;
 
+        playerShoot.ableToScroll = true;
+
+        playerShoot.ableToShoot = true;
+
         ablePause = true;
 
         //Unmute Audio
-        mixer.SetFloat("masterVol", 0);
+        mixer.SetFloat("MusicVol", 0);
 
         pauseComponent.SetActive(false);
 

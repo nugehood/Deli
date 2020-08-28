@@ -16,6 +16,8 @@ public class Shooting : MonoBehaviour
     public TMP_Text ammoText;
 
     [HideInInspector]
+    public bool ableToScroll;
+    public bool ableToShoot;
     public int scrollIndex;
     float throwSpeed;
     int i;
@@ -38,6 +40,10 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+
+        ableToShoot = true;
+        ableToScroll = true;
+
         switch (scrollIndex)
         {
             case 0:
@@ -66,7 +72,7 @@ public class Shooting : MonoBehaviour
        
         //Scroll mouse up
         //Increase index Value
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0&&ableToScroll)
         {
             scrollIndex += 1;
             nextWeapon();
@@ -74,7 +80,7 @@ public class Shooting : MonoBehaviour
 
         //Scroll mouse down
         //Decrease index Value
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0&&ableToScroll)
         {
             scrollIndex -= 1;
             prevWeapon();
@@ -93,8 +99,8 @@ public class Shooting : MonoBehaviour
                 newsPaperLimit = 1;
                 fullAmmo = newspaperAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + newsPaperLimit.ToString();
-                Debug.Log("Newspaper: " + newspaperAmmo);
-                if (Input.GetMouseButtonDown(0) && newspaperAmmo > 0)
+           
+                if (Input.GetMouseButtonDown(0) && newspaperAmmo > 0&&ableToShoot)
                 {
                     Shoot();
                 }
@@ -105,8 +111,8 @@ public class Shooting : MonoBehaviour
                 pistolLimit = 5;
                 fullAmmo = pistolAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + pistolLimit.ToString();
-                Debug.Log("Pistol: " + pistolAmmo);
-                if (Input.GetMouseButtonDown(0) && pistolAmmo > 0)
+
+                if (Input.GetMouseButtonDown(0) && pistolAmmo > 0 && ableToShoot)
                 {
                     Shoot();
                 }
@@ -117,9 +123,9 @@ public class Shooting : MonoBehaviour
                 smgLimit = 10;
                 fullAmmo = smgAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + smgLimit.ToString();
-                Debug.Log("Smg: " + smgAmmo);
 
-                if (Input.GetMouseButtonDown(0) && smgAmmo > 0)
+
+                if (Input.GetMouseButtonDown(0) && smgAmmo > 0 && ableToShoot)
                 {
                     Shoot();
                 }

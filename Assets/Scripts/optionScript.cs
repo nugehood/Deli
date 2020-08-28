@@ -13,7 +13,9 @@ public class optionScript : MonoBehaviour
 
     [Header("Mouse Properties")]
     public MouseLook mouseMovement;
+    public Shooting playerShooting;
     public Slider mouseSlider;
+    
     
 
 
@@ -31,11 +33,14 @@ public class optionScript : MonoBehaviour
     [HideInInspector]
     public string screenRes;
 
+
     private void Awake()
     {
-        if (mouseMovement)
+        if (mouseMovement&&playerShooting)
         {
             mouseMovement.ableToZoom = false;
+            playerShooting.ableToShoot = false;
+            playerShooting.ableToScroll = false;
         }
     }
 
@@ -115,14 +120,19 @@ public class optionScript : MonoBehaviour
         //Unmute audio
         mixer.SetFloat("masterVol", 0);
 
-        if (mouseMovement&&pauseScript&&WorldTime)
+        if (mouseMovement&&playerShooting&&pauseScript&&WorldTime)
         {
             pauseScript.isPaused = false;
 
             //Allow camera movement
             mouseMovement.enabled = true;
 
-       
+            playerShooting.ableToScroll = true;
+
+            //Allow Shooting
+            playerShooting.ableToShoot = true;
+
+
             //Don't show cursor
             Cursor.visible = false;
 
@@ -132,6 +142,7 @@ public class optionScript : MonoBehaviour
             //Able to use phone
             pauseScript.ablePause = true;
 
+            //Allow to zoom weapons, etc
             mouseMovement.ableToZoom = true;
 
             //Revert back to normal time
