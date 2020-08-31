@@ -44,6 +44,7 @@ public class Movement : MonoBehaviour
         WorldTime = GameObject.FindGameObjectWithTag("time").GetComponent<currWorldTime>();
         characterController = GetComponent<CharacterController>();
         StartCoroutine(energyRun());
+        StartCoroutine(HazardEffect());
         speed = walk_speed;
         runDurationRecorder = 5;
     }
@@ -130,9 +131,16 @@ public class Movement : MonoBehaviour
 
         
 
-
+        //Players gravity
         moveDirection.y -= gravity * Time.deltaTime;
+
+        //Allows player to move to certain direction
         characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    public void IncreaseRunSpeed()
+    {
+        run_speed += 0.1f;
     }
 
     //Check if player can run 
@@ -140,27 +148,7 @@ public class Movement : MonoBehaviour
     {
         while (true)
         {
-            //If player touch bubbleGum
-            //Slowness effect accur
-            while (bubbleGum)
-            {
-                yield return new WaitForSeconds(slownessDuration);
-                bubbleGum = false;
-                speed = 6.0f;
-                run_speed = 10f;
-                jumpSpeed = 8f;
-            }
-
-            //While player is in bullet time
-            //Countdown with bulletTimeDuration
-            //Then back to normal
-            while (isBulletTime)
-            {
-                yield return new WaitForSeconds(bulletTimeDuration);
-                isBulletTime = false;
-                WorldTime.worldTime = 1;
-
-            }
+  
             if (tryRun)
             {
                 while (canRun)
@@ -191,6 +179,39 @@ public class Movement : MonoBehaviour
             }
 
             yield return new WaitForEndOfFrame();
+        }
+    }
+
+
+
+    IEnumerator HazardEffect()
+    {
+        while (true)
+        {
+            //If player touch bubbleGum
+            //Slowness effect accur
+            while (bubbleGum)
+            {
+                yield return new WaitForSeconds(slownessDuration);
+                bubbleGum = false;
+                speed = 6.0f;
+                run_speed = 10f;
+                jumpSpeed = 8f;
+            }
+
+            //While player is in bullet time
+            //Countdown with bulletTimeDuration
+            //Then back to normal
+            while (isBulletTime)
+            {
+                yield return new WaitForSeconds(bulletTimeDuration);
+                isBulletTime = false;
+                WorldTime.worldTime = 1;
+
+            }
+
+            yield return new WaitForEndOfFrame();
+
         }
     }
 

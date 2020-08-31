@@ -17,6 +17,7 @@ public class houseStates : MonoBehaviour
     public houseNavigation nextHouse;
 
 
+    [HideInInspector]
     public bool houseComplete, houseFailed, nextDelivery;
 
     // Start is called before the first frame update
@@ -31,7 +32,7 @@ public class houseStates : MonoBehaviour
     
         
 
-
+        //If the house is good for delivery
         if (activeHouse)
         {
            
@@ -83,12 +84,7 @@ public class houseStates : MonoBehaviour
 
 
         }
-  
-     
-
-
-
-
+ 
 
     }
 

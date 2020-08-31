@@ -10,6 +10,8 @@ TagManager:
   - health
   - bulletTime
   - time
+  - item
+  - option
   layers:
   - Default
   - TransparentFX

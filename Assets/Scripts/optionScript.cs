@@ -6,9 +6,8 @@ using UnityEngine.UI;
 
 public class optionScript : MonoBehaviour
 {
-
+    [Header("Global usage")]
     public PauseScript pauseScript;
-
     public currWorldTime WorldTime;
 
     [Header("Mouse Properties")]
@@ -36,6 +35,12 @@ public class optionScript : MonoBehaviour
 
     private void Awake()
     {
+
+        pauseScript.ablePause = false;
+        pauseScript.isPaused = true;
+
+        //If player is available
+        //Then use mouse and camera configuration
         if (mouseMovement&&playerShooting)
         {
             mouseMovement.ableToZoom = false;
@@ -56,6 +61,17 @@ public class optionScript : MonoBehaviour
 
     void Update()
     {
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            gameObject.SetActive(false);
+
+            //Don't show cursor
+            Cursor.visible = false;
+
+            //Lock cursor
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
         //Limit of screenIndex
         screenResIndex = Mathf.Clamp(screenResIndex, 0, 2);
@@ -113,13 +129,16 @@ public class optionScript : MonoBehaviour
         Screen.SetResolution(screenWidth, screenHeight, fullscreenToggle.isOn);
 
         //Close the optionMenu
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
 
-        
+        //Able to pause again
+        pauseScript.ablePause = true;
 
         //Unmute audio
         mixer.SetFloat("masterVol", 0);
 
+        //If no Player components
+        //Usage only for MENU
         if (mouseMovement&&playerShooting&&pauseScript&&WorldTime)
         {
             pauseScript.isPaused = false;

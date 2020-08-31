@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,9 +10,9 @@ public class Shooting : MonoBehaviour
     Camera cam;
     public GameObject newspaper;
     public Transform spawnLocation;
-    Newspaper newPaper;
-
     public TMP_Text ammoText;
+    Newspaper newPaper;
+    Movement playerMovement;
 
     [HideInInspector]
     public bool ableToScroll;
@@ -28,9 +27,21 @@ public class Shooting : MonoBehaviour
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
 
+
+
+
+    [Space]
+    public GameObject itemInfoUI;
+    public TMP_Text itemNameTx, itemDescTx, itemQuoteTx;
+    public Image itemImage;
+
+
     [HideInInspector]
-    public int newsPaperLimit, pistolLimit, smgLimit;
+    public int newsPaperLimit, pistolLimit, smgLimit, howMuchItem;
+    [HideInInspector]
     public int newspaperAmmo, pistolAmmo, smgAmmo;
+
+
     int fullAmmo;
 
 
@@ -40,6 +51,10 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+
+        howMuchItem = -1;
+
+        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
 
         ableToShoot = true;
         ableToScroll = true;
@@ -52,7 +67,11 @@ public class Shooting : MonoBehaviour
                 break;
         }
 
-        newspaperAmmo = newsPaperLimit; 
+        newspaperAmmo = newsPaperLimit;
+
+
+        
+
 
     }
 
@@ -63,9 +82,6 @@ public class Shooting : MonoBehaviour
         newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
         pistolAmmo = Mathf.Clamp(pistolAmmo, 0, pistolLimit);
         smgAmmo = Mathf.Clamp(smgAmmo, 0, smgLimit);
-
-
-
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
@@ -145,14 +161,6 @@ public class Shooting : MonoBehaviour
             Debug.Log("Ammo is already FULL!");
         }
 
-
-    
-
-        
-       
-
-
-
         Ray ray;
         ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
@@ -208,6 +216,54 @@ public class Shooting : MonoBehaviour
                     }
                 }
             }
+
+
+            //Pickup Items
+            if (hit.collider.CompareTag("item"))
+            {
+                Items disItem = hit.collider.GetComponent<Items>();
+                
+                //Display item Info
+                itemInfoUI.SetActive(true);
+
+                //Change description text color on item type
+                //For example AGILITY is YELLOW
+                itemDescTx.color = disItem.item.typeColor;
+
+
+                itemNameTx.text  = disItem.item.itemName.ToString();
+                itemDescTx.text  = disItem.item.itemDesc.ToString();
+                itemQuoteTx.text = disItem.item.itemQuote.ToString();
+                itemImage.sprite = disItem.item.itemSprt;
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                        if(disItem.item.itemName.Equals("Energy Drink"))
+                        {
+                            EnergyDrinks();
+                            Destroy(hit.collider.gameObject);
+                        }
+                    
+                    else
+                    {
+                        Debug.Log("SLOT FULL!!");
+                        
+                    }
+
+
+                }
+            }
+            else
+            {
+                //Reset item info value
+                itemNameTx.text = null;
+                itemDescTx.text = null;
+                itemQuoteTx.text = null;
+                itemImage.sprite = null;
+                itemInfoUI.SetActive(false);
+            }
+
+
         }
 
 
@@ -221,6 +277,7 @@ public class Shooting : MonoBehaviour
     //Active the next weapon object (i + 1) without changing the value
     //Then the current index which is i(Still the original value, not yet being added), will get deactive
     //And increase the i index and the it will change it's value! (Same also applies for the prevWeapon)
+    
 
 
     public void nextWeapon()
@@ -236,6 +293,11 @@ public class Shooting : MonoBehaviour
         Weapons[i].SetActive(false);
         i -= 1;
 
+    }
+
+    public void EnergyDrinks()
+    {
+        playerMovement.IncreaseRunSpeed();
     }
   
 

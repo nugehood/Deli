@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(lookAt))]
 public class houseNavigation : MonoBehaviour
 {
     public TMP_Text houseNumText;
-    public lookAt arrowsLocation;
+    public lookAt arrowIndicator;
     public houseStates[] houses;
 
     [HideInInspector]
@@ -19,20 +20,20 @@ public class houseNavigation : MonoBehaviour
     {
         houses = GameObject.FindObjectsOfType<houseStates>();
 
-            nextHouseNum = Random.Range(0, houses.Length);
-            if (houses[nextHouseNum].activeHouse && houses[nextHouseNum].enabled && !houses[nextHouseNum].houseComplete
-            && !houses[nextHouseNum].houseFailed)
-            {
-                arrowsLocation.nextHouse = houses[nextHouseNum].transform;
-                houseNumText.text = houses[nextHouseNum].houseNumber.ToString();
-            }
+        nextHouseNum = Random.Range(0, houses.Length);
+        if (houses[nextHouseNum].activeHouse && houses[nextHouseNum].enabled && !houses[nextHouseNum].houseComplete
+        && !houses[nextHouseNum].houseFailed)
+        {
+            arrowIndicator.nextHouse = houses[nextHouseNum].transform;
+            houseNumText.text = houses[nextHouseNum].houseNumber.ToString();
+        }
 
-            else
-            {
+        else
+        {
 
-                Invoke("DeliveryComplete", 0);
+            Invoke("DeliveryComplete", 0);
 
-            }
+        }
 
 
     }
@@ -41,17 +42,6 @@ public class houseNavigation : MonoBehaviour
     void Update()
     {
         houses = GameObject.FindObjectsOfType<houseStates>();
-        /*
-        foreach(houseStates house in houses)
-        {
-            if (house.activeHouse)
-            {
-                arrowsLocation.nextHouse = house.transform;
-                houseNumText.text = house.houseNumber.ToString();
-            }
-        }
-        */
-
     }
 
     //If delivery is complete
@@ -69,7 +59,7 @@ public class houseNavigation : MonoBehaviour
         if (houses[nextHouseNum].activeHouse && houses[nextHouseNum].enabled && !houses[nextHouseNum].houseComplete
             && !houses[nextHouseNum].houseFailed)
         {
-            arrowsLocation.nextHouse = houses[nextHouseNum].transform;
+            arrowIndicator.nextHouse = houses[nextHouseNum].transform;
             houseNumText.text = houses[nextHouseNum].houseNumber.ToString();
         }
      
