@@ -18,6 +18,7 @@ public class Movement : MonoBehaviour
     public float runDuration = 100f;
     public float runRegenTime = 15.0f;
     public Slider runMeter;
+    public ParticleSystem runTrails;
     float runDurationRecorder;
 
     [HideInInspector]
@@ -41,12 +42,14 @@ public class Movement : MonoBehaviour
 
     public void Start()
     {
+       
         WorldTime = GameObject.FindGameObjectWithTag("time").GetComponent<currWorldTime>();
         characterController = GetComponent<CharacterController>();
         StartCoroutine(energyRun());
         StartCoroutine(HazardEffect());
         speed = walk_speed;
         runDurationRecorder = 5;
+        
     }
         
 
@@ -79,6 +82,7 @@ public class Movement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 moveDirection.y = jumpSpeed;
+               
             }
 
             //Running
@@ -89,6 +93,7 @@ public class Movement : MonoBehaviour
                 {
                     speed = run_speed;
                     runDurationRecorder -= Time.deltaTime;
+                    runTrails.enableEmission = true;
                 }
 
                 else if (!canRun)
@@ -96,23 +101,18 @@ public class Movement : MonoBehaviour
                    
                     speed = walk_speed;
                     runDurationRecorder += Time.deltaTime;
-
+                    runTrails.enableEmission = false;
                 }
             }
             else
             {
                 speed = walk_speed;
                 runDurationRecorder += Time.deltaTime;
-
+                runTrails.enableEmission = false;
             }
 
            
-           
-        
-
-
-           
-
+         
             //Entered bullet time
             if (isBulletTime)
             {
@@ -127,6 +127,7 @@ public class Movement : MonoBehaviour
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection.x *= speed;
             moveDirection.z *= speed;
+            runTrails.enableEmission = false;
         }
 
         
@@ -163,7 +164,7 @@ public class Movement : MonoBehaviour
                 {
                     //Regen fill up energy
                     //If energy is refill then canRun
-                    
+                    runTrails.enableEmission = false;
                     yield return new WaitForSeconds(runRegenTime);
                     canRun = true;
                 }

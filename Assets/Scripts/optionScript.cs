@@ -36,13 +36,13 @@ public class optionScript : MonoBehaviour
     private void Awake()
     {
 
-        pauseScript.ablePause = false;
-        pauseScript.isPaused = true;
-
         //If player is available
         //Then use mouse and camera configuration
-        if (mouseMovement&&playerShooting)
+        if (mouseMovement&&playerShooting&&pauseScript)
         {
+            pauseScript.ablePause = false;
+            pauseScript.isPaused = true;
+
             mouseMovement.ableToZoom = false;
             playerShooting.ableToShoot = false;
             playerShooting.ableToScroll = false;
@@ -131,9 +131,6 @@ public class optionScript : MonoBehaviour
         //Close the optionMenu
         gameObject.SetActive(false);
 
-        //Able to pause again
-        pauseScript.ablePause = true;
-
         //Unmute audio
         mixer.SetFloat("masterVol", 0);
 
@@ -142,6 +139,9 @@ public class optionScript : MonoBehaviour
         if (mouseMovement&&playerShooting&&pauseScript&&WorldTime)
         {
             pauseScript.isPaused = false;
+
+            //Able to pause again
+            pauseScript.ablePause = true;
 
             //Allow camera movement
             mouseMovement.enabled = true;

@@ -26,7 +26,7 @@ public class Shooting : MonoBehaviour
     public GameObject[] Weapons;
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
-
+    public int newspaperThrow, pistolThrow, smgThrow,rpgThrow, dualThrow;
 
 
 
@@ -37,10 +37,9 @@ public class Shooting : MonoBehaviour
 
 
     [HideInInspector]
-    public int newsPaperLimit, pistolLimit, smgLimit, howMuchItem;
+    public int newsPaperLimit, pistolLimit, smgLimit, rpgLimit, dualLimit, howMuchItem;
     [HideInInspector]
-    public int newspaperAmmo, pistolAmmo, smgAmmo;
-
+    public int newspaperAmmo, pistolAmmo, smgAmmo, rpgAmmo, dualAmmo;
 
     int fullAmmo;
 
@@ -62,7 +61,7 @@ public class Shooting : MonoBehaviour
         switch (scrollIndex)
         {
             case 0:
-                throwSpeed = 500;
+                throwSpeed = newspaperThrow;
                 newsPaperLimit = 1;
                 break;
         }
@@ -78,10 +77,12 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Limit how much ammo can hold based on newsPaperLimit(Max Value)
+        //Limit how much ammo can hold based on eachWeaponLimit(Max Value)
         newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
         pistolAmmo = Mathf.Clamp(pistolAmmo, 0, pistolLimit);
         smgAmmo = Mathf.Clamp(smgAmmo, 0, smgLimit);
+        rpgAmmo = Mathf.Clamp(rpgAmmo, 0, rpgLimit);
+        dualAmmo = Mathf.Clamp(dualAmmo, 0, dualLimit);
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
@@ -111,7 +112,7 @@ public class Shooting : MonoBehaviour
         switch (scrollIndex)
         {
             case 0:
-                throwSpeed = 500;
+                throwSpeed = newspaperThrow;
                 newsPaperLimit = 1;
                 fullAmmo = newspaperAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + newsPaperLimit.ToString();
@@ -123,7 +124,7 @@ public class Shooting : MonoBehaviour
 
                 break;
             case 1:
-                throwSpeed = 700;
+                throwSpeed = pistolThrow;
                 pistolLimit = 5;
                 fullAmmo = pistolAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + pistolLimit.ToString();
@@ -135,7 +136,7 @@ public class Shooting : MonoBehaviour
 
                 break;
             case 2:
-                throwSpeed = 1000;
+                throwSpeed = smgThrow;
                 smgLimit = 10;
                 fullAmmo = smgAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + smgLimit.ToString();
@@ -143,6 +144,34 @@ public class Shooting : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0 && ableToShoot)
                 {
+                    Shoot();
+                }
+
+                break;
+            case 3:
+                throwSpeed = rpgThrow;
+                rpgLimit = 2;
+                fullAmmo = rpgAmmo;
+                ammoText.text = fullAmmo.ToString() + "/" + rpgLimit.ToString();
+
+
+                if (Input.GetMouseButtonDown(0) && rpgAmmo > 0 && ableToShoot)
+                {
+                    Shoot();
+                    Shoot();
+                }
+
+                break;
+            case 4:
+                throwSpeed = dualThrow;
+                dualLimit = 10;
+                fullAmmo = dualAmmo;
+                ammoText.text = fullAmmo.ToString() + "/" + dualLimit.ToString();
+
+
+                if (Input.GetMouseButtonDown(0) && dualAmmo > 0 && ableToShoot)
+                {
+                    Shoot();
                     Shoot();
                 }
 
@@ -213,6 +242,33 @@ public class Shooting : MonoBehaviour
                                 Debug.Log("Ammo is full!");
                             }
                             break;
+
+                        case 3:
+                            if (rpgAmmo < rpgLimit)
+                            {
+                                PickAmmo();
+                                Destroy(hit.collider.gameObject);
+                            }
+
+                            else
+                            {
+                                Debug.Log("Ammo is full!");
+                            }
+                            break;
+
+                        case 4:
+                            if (dualAmmo < dualLimit)
+                            {
+                                PickAmmo();
+                                Destroy(hit.collider.gameObject);
+                            }
+
+                            else
+                            {
+                                Debug.Log("Ammo is full!");
+                            }
+                            break;
+
                     }
                 }
             }
@@ -223,6 +279,7 @@ public class Shooting : MonoBehaviour
             {
                 Items disItem = hit.collider.GetComponent<Items>();
                 
+
                 //Display item Info
                 itemInfoUI.SetActive(true);
 
@@ -230,7 +287,7 @@ public class Shooting : MonoBehaviour
                 //For example AGILITY is YELLOW
                 itemDescTx.color = disItem.item.typeColor;
 
-
+                //Display Info
                 itemNameTx.text  = disItem.item.itemName.ToString();
                 itemDescTx.text  = disItem.item.itemDesc.ToString();
                 itemQuoteTx.text = disItem.item.itemQuote.ToString();
@@ -238,11 +295,29 @@ public class Shooting : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                        if(disItem.item.itemName.Equals("Energy Drink"))
-                        {
-                            EnergyDrinks();
-                            Destroy(hit.collider.gameObject);
-                        }
+                   
+                    //Check if item is already Unlocked
+                    if (GetBool(disItem.item.itemName).Equals(true))
+                    {
+                        Debug.Log("ITEM ALREADY UNLOCKED!");
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt(disItem.item.itemName, true ? 1 : 0);
+                    }
+
+
+                    if (disItem.item.itemName.Equals("Energy Drink"))
+                    {
+                        EnergyDrinks();
+                        Destroy(hit.collider.gameObject);
+                    }
+
+                    if(disItem.item.itemName.Equals("Strange Glasses"))
+                    {
+                        StrangeGlasses();
+                        Destroy(hit.collider.gameObject);
+                    }
                     
                     else
                     {
@@ -295,11 +370,21 @@ public class Shooting : MonoBehaviour
 
     }
 
+    public void StrangeGlasses()
+    {
+        newspaperThrow += 5;
+    }
+
     public void EnergyDrinks()
     {
         playerMovement.IncreaseRunSpeed();
     }
-  
+
+
+    public static bool GetBool(string name)
+    {
+        return PlayerPrefs.GetInt(name) == 1 ? true : false;
+    }
 
     public void Shoot()
     {
@@ -323,6 +408,13 @@ public class Shooting : MonoBehaviour
                 smgAmmo -= 1;
 
                 break;
+            case 3:
+                rpgAmmo -= 2;
+                break;
+            case 4:
+                dualAmmo -= 2;
+                break;
+
         }
 
 
@@ -346,6 +438,12 @@ public class Shooting : MonoBehaviour
                 break;
             case 2:
                 smgAmmo += 2;
+                break;
+            case 3:
+                rpgAmmo += 2;
+                break;
+            case 4:
+                dualAmmo += 2;
                 break;
 
         }
