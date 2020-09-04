@@ -8,11 +8,13 @@ using TMPro;
 public class Shooting : MonoBehaviour
 {
     Camera cam;
-    public GameObject newspaper;
-    public Transform spawnLocation;
-    public TMP_Text ammoText;
+    public float rayCastLength;
     Newspaper newPaper;
     Movement playerMovement;
+    public GameObject itemIcon;
+    public Transform itemGroup;
+    public StatusTab statusTab;
+    ItemOnStatus itemOnStatus;
 
     [HideInInspector]
     public bool ableToScroll;
@@ -22,6 +24,9 @@ public class Shooting : MonoBehaviour
     int i;
 
     [Header("Weapons Component")]
+    public GameObject newspaper;
+    public Transform spawnLocation;
+    public TMP_Text ammoText;
     public int howMuchWeapon;
     public GameObject[] Weapons;
     public Image weaponIMG;
@@ -30,10 +35,14 @@ public class Shooting : MonoBehaviour
 
 
 
+
     [Space]
     public GameObject itemInfoUI;
     public TMP_Text itemNameTx, itemDescTx, itemQuoteTx;
     public Image itemImage;
+
+    [Space]
+    public TMP_Text pickUpText;
 
 
     [HideInInspector]
@@ -51,10 +60,15 @@ public class Shooting : MonoBehaviour
     {
         cam = GetComponent<Camera>();
 
+        //Equals to -1
+        //Because we're already at 0 on scroll index
+        //So when decreasing it will not go over the limit of the scrollIndex
         howMuchItem = -1;
 
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
 
+
+        //Initialize to default value
         ableToShoot = true;
         ableToScroll = true;
 
@@ -196,11 +210,13 @@ public class Shooting : MonoBehaviour
         RaycastHit hit;
 
 
-        if (Physics.Raycast(ray, out hit, 5))
+        if (Physics.Raycast(ray, out hit, rayCastLength))
         {
             //If raycast enter obj with ammo Tag
+            
             if (hit.collider.gameObject.CompareTag("ammo"))
             {
+                pickUpText.text = "E";
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     switch (scrollIndex)
@@ -272,11 +288,16 @@ public class Shooting : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                pickUpText.text = null;
+            }
 
 
             //Pickup Items
             if (hit.collider.CompareTag("item"))
             {
+                //Get Items from the raycast
                 Items disItem = hit.collider.GetComponent<Items>();
                 
 
@@ -297,16 +318,30 @@ public class Shooting : MonoBehaviour
                 {
                    
                     //Check if item is already Unlocked
+                    //Else Playerprefs set the integer value of itemName
+                    //It's true if int is 1 and otherwise
+                    
                     if (GetBool(disItem.item.itemName).Equals(true))
                     {
                         Debug.Log("ITEM ALREADY UNLOCKED!");
+                        GameObject newItem = (GameObject)Instantiate(itemIcon, itemGroup);
+                        itemOnStatus = newItem.GetComponent<ItemOnStatus>();
+                        itemOnStatus.ItemData = disItem.item;
+                        itemOnStatus.itemIcon.sprite = disItem.item.itemSprt;
+                        itemOnStatus.totalCount += 1;
+
+                        
+                       
                     }
                     else
                     {
                         PlayerPrefs.SetInt(disItem.item.itemName, true ? 1 : 0);
                     }
 
-
+                    //Check if it's equals the name of the Item
+                    //Then run the function or method
+                    //That's inteded to use for the specific Item
+                    //Pickup and then destroy obj
                     if (disItem.item.itemName.Equals("Energy Drink"))
                     {
                         EnergyDrinks();
@@ -352,9 +387,6 @@ public class Shooting : MonoBehaviour
     //Active the next weapon object (i + 1) without changing the value
     //Then the current index which is i(Still the original value, not yet being added), will get deactive
     //And increase the i index and the it will change it's value! (Same also applies for the prevWeapon)
-    
-
-
     public void nextWeapon()
     {
         Weapons[i + 1].SetActive(true);
@@ -409,10 +441,10 @@ public class Shooting : MonoBehaviour
 
                 break;
             case 3:
-                rpgAmmo -= 2;
+                rpgAmmo -= 1;
                 break;
             case 4:
-                dualAmmo -= 2;
+                dualAmmo -= 1;
                 break;
 
         }

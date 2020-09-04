@@ -139,6 +139,9 @@ public class Movement : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
     }
 
+    //Increasing run speed
+    //Used only when picking up a certain items
+    //That allows this or called this function/method
     public void IncreaseRunSpeed()
     {
         run_speed += 0.1f;

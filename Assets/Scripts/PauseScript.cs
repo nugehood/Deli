@@ -66,6 +66,7 @@ public class PauseScript : MonoBehaviour
         WorldTime.worldTime = 0;
     }
 
+    //Resuming gameplay
     public void resumeGame()
     {
         isPaused = false;
