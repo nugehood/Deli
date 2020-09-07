@@ -26,7 +26,7 @@ public class HeadBobbing : MonoBehaviour
         {
             walkingBobbingSpeed = 14f;
         }
-
+        
         //Bobbing speed when not running
         else if(!movement.canRun && movement.tryRun)
         {

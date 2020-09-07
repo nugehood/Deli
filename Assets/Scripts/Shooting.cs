@@ -15,6 +15,7 @@ public class Shooting : MonoBehaviour
     public Transform itemGroup;
     public StatusTab statusTab;
     ItemOnStatus itemOnStatus;
+    MouseLook mouseLook;
 
     [HideInInspector]
     public bool ableToScroll;
@@ -32,6 +33,15 @@ public class Shooting : MonoBehaviour
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
     public int newspaperThrow, pistolThrow, smgThrow,rpgThrow, dualThrow;
+
+    [Header("Weapons FX")]
+    public GameObject muzzleFlash;
+    public Transform[] muzzleFlashPos;
+
+    [Header("Weapons sounds")]
+    public AudioSource fxSource;
+    public AudioClip[] shootSFX;
+
 
 
 
@@ -59,6 +69,8 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+
+        mouseLook = GetComponent<MouseLook>();
 
         //Equals to -1
         //Because we're already at 0 on scroll index
@@ -91,6 +103,9 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        
+
         //Limit how much ammo can hold based on eachWeaponLimit(Max Value)
         newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
         pistolAmmo = Mathf.Clamp(pistolAmmo, 0, pistolLimit);
@@ -146,6 +161,8 @@ public class Shooting : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) && pistolAmmo > 0 && ableToShoot)
                 {
                     Shoot();
+                    ShootSFX(shootSFX[scrollIndex]);
+                    MuzzleFlash(muzzleFlashPos[scrollIndex]);
                 }
 
                 break;
@@ -159,6 +176,8 @@ public class Shooting : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0 && ableToShoot)
                 {
                     Shoot();
+                    ShootSFX(shootSFX[scrollIndex]);
+                    MuzzleFlash(muzzleFlashPos[scrollIndex]);
                 }
 
                 break;
@@ -186,6 +205,10 @@ public class Shooting : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) && dualAmmo > 0 && ableToShoot)
                 {
                     Shoot();
+                    ShootSFX(shootSFX[scrollIndex]);
+                    ShootSFX(shootSFX[scrollIndex]);
+                    MuzzleFlash(muzzleFlashPos[scrollIndex]);
+                    MuzzleFlash(muzzleFlashPos[scrollIndex+1]);
                     Shoot();
                 }
 
@@ -383,6 +406,8 @@ public class Shooting : MonoBehaviour
 
     }
 
+ 
+
     //Next weapons in the array
     //Active the next weapon object (i + 1) without changing the value
     //Then the current index which is i(Still the original value, not yet being added), will get deactive
@@ -418,8 +443,28 @@ public class Shooting : MonoBehaviour
         return PlayerPrefs.GetInt(name) == 1 ? true : false;
     }
 
+    /**
+     Spawn MuzzleFlash on the given position. 
+        Each object/weapon has its own Child gameObject with muzzleFlash.
+        Each position will always change depending on the active array based on scrollIndex.
+    **/
+    public void MuzzleFlash(Transform muzzlePos)
+    {
+        GameObject mFlash = (GameObject)Instantiate(muzzleFlash, muzzlePos.position, muzzlePos.rotation, muzzlePos.parent);
+
+    }
+
+    /**
+     Play shooting sound. Will always change depending on the active array based on scrollIndex.
+    **/
+    public void ShootSFX(AudioClip sound)
+    {
+        fxSource.PlayOneShot(sound);
+    }
+
     public void Shoot()
     {
+
         //Spawn new newspaper
         //Get the new newspaper component
         //Change their throwSpeed value to the given throwSpeed based on Index
@@ -452,7 +497,9 @@ public class Shooting : MonoBehaviour
 
 
 
+
     }
+
 
     //Refill ammo
     public void PickAmmo()
