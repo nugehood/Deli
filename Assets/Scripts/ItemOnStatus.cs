@@ -14,7 +14,7 @@ public class ItemOnStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        itemCount.text = totalCount.ToString();
+        itemCount.text = null;
         
     }
 }

@@ -32,11 +32,12 @@ public class Shooting : MonoBehaviour
     public GameObject[] Weapons;
     public Image weaponIMG;
     public Sprite[] weaponsIcon;
-    public int newspaperThrow, pistolThrow, smgThrow,rpgThrow, dualThrow;
+    public int newspaperThrow, pistolThrow, smgThrow, rpgThrow, dualThrow;
 
     [Header("Weapons FX")]
     public GameObject muzzleFlash;
     public Transform[] muzzleFlashPos;
+    public ShakeCamera shakeFX; 
 
     [Header("Weapons sounds")]
     public AudioSource fxSource;
@@ -95,7 +96,7 @@ public class Shooting : MonoBehaviour
         newspaperAmmo = newsPaperLimit;
 
 
-        
+
 
 
     }
@@ -104,21 +105,25 @@ public class Shooting : MonoBehaviour
     void Update()
     {
 
-        
+
 
         //Limit how much ammo can hold based on eachWeaponLimit(Max Value)
         newspaperAmmo = Mathf.Clamp(newspaperAmmo, 0, newsPaperLimit);
+
         pistolAmmo = Mathf.Clamp(pistolAmmo, 0, pistolLimit);
+
         smgAmmo = Mathf.Clamp(smgAmmo, 0, smgLimit);
+
         rpgAmmo = Mathf.Clamp(rpgAmmo, 0, rpgLimit);
+
         dualAmmo = Mathf.Clamp(dualAmmo, 0, dualLimit);
 
         //Limit the scrollValue/Number of availabe weapons
         scrollIndex = Mathf.Clamp(scrollIndex, 0, howMuchWeapon);
-       
+
         //Scroll mouse up
         //Increase index Value
-        if (Input.GetAxis("Mouse ScrollWheel") > 0&&ableToScroll)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && ableToScroll)
         {
             scrollIndex += 1;
             nextWeapon();
@@ -126,7 +131,7 @@ public class Shooting : MonoBehaviour
 
         //Scroll mouse down
         //Decrease index Value
-        if (Input.GetAxis("Mouse ScrollWheel") < 0&&ableToScroll)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && ableToScroll)
         {
             scrollIndex -= 1;
             prevWeapon();
@@ -145,8 +150,8 @@ public class Shooting : MonoBehaviour
                 newsPaperLimit = 1;
                 fullAmmo = newspaperAmmo;
                 ammoText.text = fullAmmo.ToString() + "/" + newsPaperLimit.ToString();
-           
-                if (Input.GetMouseButtonDown(0) && newspaperAmmo > 0&&ableToShoot)
+
+                if (Input.GetMouseButtonDown(0) && newspaperAmmo > 0 && ableToShoot)
                 {
                     Shoot();
                 }
@@ -161,6 +166,12 @@ public class Shooting : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) && pistolAmmo > 0 && ableToShoot)
                 {
                     Shoot();
+
+                    //Shake the camera
+                    shakeFX.shake = true;
+                    shakeFX.seconds = 0.2f;
+                    shakeFX.shakeAmount = 1;
+
                     ShootSFX(shootSFX[scrollIndex]);
                     MuzzleFlash(muzzleFlashPos[scrollIndex]);
                 }
@@ -176,6 +187,12 @@ public class Shooting : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) && smgAmmo > 0 && ableToShoot)
                 {
                     Shoot();
+
+                    //Shake the camera
+                    shakeFX.shake = true;
+                    shakeFX.seconds = 0.3f;
+                    shakeFX.shakeAmount = 1;
+
                     ShootSFX(shootSFX[scrollIndex]);
                     MuzzleFlash(muzzleFlashPos[scrollIndex]);
                 }
@@ -190,6 +207,7 @@ public class Shooting : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0) && rpgAmmo > 0 && ableToShoot)
                 {
+
                     Shoot();
                     Shoot();
                 }
@@ -208,7 +226,7 @@ public class Shooting : MonoBehaviour
                     ShootSFX(shootSFX[scrollIndex]);
                     ShootSFX(shootSFX[scrollIndex]);
                     MuzzleFlash(muzzleFlashPos[scrollIndex]);
-                    MuzzleFlash(muzzleFlashPos[scrollIndex+1]);
+                    MuzzleFlash(muzzleFlashPos[scrollIndex + 1]);
                     Shoot();
                 }
 
@@ -218,7 +236,7 @@ public class Shooting : MonoBehaviour
 
         //Reloading newspaper
         //Only the common first newspaper can acces this!
-        if (Input.GetKeyDown(KeyCode.R)&&newspaperAmmo <= newsPaperLimit)
+        if (Input.GetKeyDown(KeyCode.R) && newspaperAmmo <= newsPaperLimit)
         {
             newspaperAmmo += 1;
         }
@@ -236,7 +254,7 @@ public class Shooting : MonoBehaviour
         if (Physics.Raycast(ray, out hit, rayCastLength))
         {
             //If raycast enter obj with ammo Tag
-            
+
             if (hit.collider.gameObject.CompareTag("ammo"))
             {
                 pickUpText.text = "E";
@@ -322,7 +340,7 @@ public class Shooting : MonoBehaviour
             {
                 //Get Items from the raycast
                 Items disItem = hit.collider.GetComponent<Items>();
-                
+
 
                 //Display item Info
                 itemInfoUI.SetActive(true);
@@ -332,18 +350,18 @@ public class Shooting : MonoBehaviour
                 itemDescTx.color = disItem.item.typeColor;
 
                 //Display Info
-                itemNameTx.text  = disItem.item.itemName.ToString();
-                itemDescTx.text  = disItem.item.itemDesc.ToString();
+                itemNameTx.text = disItem.item.itemName.ToString();
+                itemDescTx.text = disItem.item.itemDesc.ToString();
                 itemQuoteTx.text = disItem.item.itemQuote.ToString();
                 itemImage.sprite = disItem.item.itemSprt;
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                   
+
                     //Check if item is already Unlocked
                     //Else Playerprefs set the integer value of itemName
                     //It's true if int is 1 and otherwise
-                    
+
                     if (GetBool(disItem.item.itemName).Equals(true))
                     {
                         Debug.Log("ITEM ALREADY UNLOCKED!");
@@ -351,14 +369,22 @@ public class Shooting : MonoBehaviour
                         itemOnStatus = newItem.GetComponent<ItemOnStatus>();
                         itemOnStatus.ItemData = disItem.item;
                         itemOnStatus.itemIcon.sprite = disItem.item.itemSprt;
-                        itemOnStatus.totalCount += 1;
-
-                        
-                       
                     }
+
                     else
                     {
                         PlayerPrefs.SetInt(disItem.item.itemName, true ? 1 : 0);
+                    }
+
+
+                    if (disItem.item.itemType.Equals("Agility"))
+                    {
+                        statusTab.agility += 0.2f % 2;
+                    }
+
+                    if (disItem.item.itemType.Equals("Accuracy"))
+                    {
+                        statusTab.accuracy += 0.1f % 2;
                     }
 
                     //Check if it's equals the name of the Item
@@ -367,20 +393,22 @@ public class Shooting : MonoBehaviour
                     //Pickup and then destroy obj
                     if (disItem.item.itemName.Equals("Energy Drink"))
                     {
+                        
                         EnergyDrinks();
                         Destroy(hit.collider.gameObject);
                     }
 
-                    if(disItem.item.itemName.Equals("Strange Glasses"))
+                    if (disItem.item.itemName.Equals("Strange Glasses"))
                     {
+                        
                         StrangeGlasses();
                         Destroy(hit.collider.gameObject);
                     }
-                    
+
                     else
                     {
                         Debug.Log("SLOT FULL!!");
-                        
+
                     }
 
 
@@ -406,7 +434,7 @@ public class Shooting : MonoBehaviour
 
     }
 
- 
+
 
     //Next weapons in the array
     //Active the next weapon object (i + 1) without changing the value
@@ -426,7 +454,7 @@ public class Shooting : MonoBehaviour
         i -= 1;
 
     }
-
+    
     public void StrangeGlasses()
     {
         newspaperThrow += 5;
