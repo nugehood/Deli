@@ -12,6 +12,7 @@ TagManager:
   - time
   - item
   - option
+  - vending
   layers:
   - Default
   - TransparentFX

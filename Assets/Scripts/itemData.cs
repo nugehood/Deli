@@ -7,6 +7,8 @@ public class itemData : ScriptableObject
     public string itemQuote;
     [TextArea(5, 2)]
     public string itemDesc;
+    [TextArea(5, 2)]
+    public string achiveDesc;
     public float rarity;
     [Tooltip("Agility,range,ETC!")]
     public string itemType;

@@ -11,13 +11,13 @@ public class Shooting : MonoBehaviour
     public float rayCastLength;
     Newspaper newPaper;
     Movement playerMovement;
-    public GameObject itemIcon;
-    public Transform itemGroup;
-    public StatusTab statusTab;
+    NewItemAchv achiveItem;
     ItemOnStatus itemOnStatus;
     MouseLook mouseLook;
+    VendingMachine vending;
+    MeshRenderer vendRenderer;
 
-    [HideInInspector]
+   [HideInInspector]
     public bool ableToScroll;
     public bool ableToShoot;
     public int scrollIndex;
@@ -43,6 +43,14 @@ public class Shooting : MonoBehaviour
     public AudioSource fxSource;
     public AudioClip[] shootSFX;
 
+    [Header("Items Component")]
+    public GameObject itemIcon;
+    public Transform itemGroup;
+    public StatusTab statusTab;
+
+    [Header("Unlockables and Achivements Component")]
+    public GameObject newAchive;
+    public Transform canvas;
 
 
 
@@ -374,6 +382,14 @@ public class Shooting : MonoBehaviour
                     else
                     {
                         PlayerPrefs.SetInt(disItem.item.itemName, true ? 1 : 0);
+                        
+                        //Get new item notif
+                        GameObject newAch = (GameObject)Instantiate(newAchive, canvas);
+                        achiveItem = newAch.GetComponent<NewItemAchv>();
+                        achiveItem.nameText.text = disItem.item.name.ToString();
+                        achiveItem.descText.text = disItem.item.achiveDesc.ToString();
+                        achiveItem.itemImg.sprite = disItem.item.itemSprt;
+                        
                     }
 
 
@@ -398,10 +414,10 @@ public class Shooting : MonoBehaviour
                         Destroy(hit.collider.gameObject);
                     }
 
-                    if (disItem.item.itemName.Equals("Strange Glasses"))
+                    if (disItem.item.itemName.Equals("Coffee"))
                     {
                         
-                        StrangeGlasses();
+                        Coffee();
                         Destroy(hit.collider.gameObject);
                     }
 
@@ -425,6 +441,31 @@ public class Shooting : MonoBehaviour
             }
 
 
+            if (hit.collider.gameObject.CompareTag("vending"))
+            {
+                vendRenderer = hit.collider.gameObject.GetComponent<MeshRenderer>();
+                vending = hit.collider.gameObject.GetComponent<VendingMachine>();
+                vendRenderer.material.SetColor("_OutlineColor", vending.highlightOutline);
+
+              
+
+                if (Input.GetKeyDown(KeyCode.E)&&!vending.inUse)
+                {
+                    Animator venAnim = hit.collider.gameObject.GetComponent<Animator>();
+                    vending.health -= 1;
+                    vending.inUse = true;
+                    venAnim.SetTrigger("use");
+                    Invoke("StopShaking", 1.6f);
+                }
+                
+            }
+            else
+            {
+                vendRenderer.material.SetColor("_OutlineColor", vending.normalOutline);
+            }
+
+
+
         }
 
 
@@ -432,6 +473,13 @@ public class Shooting : MonoBehaviour
 
 
 
+    }
+
+    public void StopShaking()
+    {
+        vending.inUse = false;
+        vending.randomness = Random.Range(0, vending.drinks.Length);
+        Instantiate(vending.drinks[vending.randomness], vending.spawnLocation.position, vending.spawnLocation.rotation);
     }
 
 
@@ -455,7 +503,7 @@ public class Shooting : MonoBehaviour
 
     }
     
-    public void StrangeGlasses()
+    public void Coffee()
     {
         newspaperThrow += 5;
     }
