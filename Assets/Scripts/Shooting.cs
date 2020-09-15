@@ -215,6 +215,10 @@ public class Shooting : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0) && rpgAmmo > 0 && ableToShoot)
                 {
+                    //Shake the camera
+                    shakeFX.shake = true;
+                    shakeFX.seconds = 0.2f;
+                    shakeFX.shakeAmount = 2;
 
                     Shoot();
                     Shoot();
@@ -563,6 +567,7 @@ public class Shooting : MonoBehaviour
                 break;
             case 3:
                 rpgAmmo -= 1;
+                newPaper.rocket = true;
                 break;
             case 4:
                 dualAmmo -= 1;

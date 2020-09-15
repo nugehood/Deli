@@ -8,6 +8,7 @@ public class houseDelivered : MonoBehaviour
 
     public bool isDelivered;
     Rigidbody[] rb;
+    Newspaper[] bruh;
 
     
 
@@ -20,6 +21,11 @@ public class houseDelivered : MonoBehaviour
             for(int i = 0; i <= rb.Length; i++)
             {
                 rb[i].isKinematic = true;
+            }
+
+            for (int i = 0; i <= bruh.Length; i++)
+            {
+                bruh[i].rocket = false;
             }
         }
     }

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class houseStates : MonoBehaviour
 {
     Transform housePosition;
+    DeliveryComplete completeDelivery;
 
     [Space]
     public bool activeHouse;
@@ -29,9 +30,10 @@ public class houseStates : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
-        
+        completeDelivery = GameObject.FindGameObjectWithTag("Player").GetComponent<DeliveryComplete>();
 
+        
+            
         //If the house is good for delivery
         if (activeHouse)
         {
@@ -73,12 +75,14 @@ public class houseStates : MonoBehaviour
             if (houseComplete&&!nextDelivery)
             {
                 nextHouse.DeliveryComplete();
+                completeDelivery.completeCounter += 1;
                 nextDelivery = true;
             }
 
             if (houseFailed && !nextDelivery)
             {
                 nextHouse.DeliveryComplete();
+                completeDelivery.failedCounter += 1;
                 nextDelivery = true;
             }
 

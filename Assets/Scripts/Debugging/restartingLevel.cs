@@ -6,15 +6,20 @@ using UnityEngine.SceneManagement;
 public class restartingLevel : MonoBehaviour
 {
 
-  
+    Scene currScene;
 
     // Update is called once per frame
     void Update()
     {
-        Scene currScene = SceneManager.GetActiveScene();
+        currScene = SceneManager.GetActiveScene();
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            SceneManager.LoadScene(currScene.name);
+            RestartLevel();
         }
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(currScene.name);
     }
 }
