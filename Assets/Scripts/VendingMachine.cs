@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class VendingMachine : MonoBehaviour
 {
+    [HideInInspector]
+    public int vendingPrice = 60;
+
     public int health;
     public GameObject[] drinks;
     public Transform spawnLocation;
@@ -17,18 +20,21 @@ public class VendingMachine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponentInParent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
-
         if(health <= 0)
         {
             animator.SetBool("des", true);
+            Invoke("DestroyObj", 2f);
         }
+    }
+
+    public void DestroyObj()
+    {
+        Destroy(transform.parent.gameObject);
     }
 }

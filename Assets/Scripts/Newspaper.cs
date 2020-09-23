@@ -12,6 +12,7 @@ public class Newspaper : MonoBehaviour
     public float throwSpeed;
     public bool rocket;
     public ParticleSystem rocketTrails;
+    public int newspaperDamage;
 
     // Start is called before the first frame update
     void Start()

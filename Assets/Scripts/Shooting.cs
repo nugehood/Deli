@@ -52,6 +52,9 @@ public class Shooting : MonoBehaviour
     public GameObject newAchive;
     public Transform canvas;
 
+    [Header("Buying")]
+    public PlayerBanks playerMoney;
+
 
 
 
@@ -220,6 +223,7 @@ public class Shooting : MonoBehaviour
                     shakeFX.seconds = 0.2f;
                     shakeFX.shakeAmount = 2;
 
+                    ShootSFX(shootSFX[scrollIndex]);
                     Shoot();
                     Shoot();
                 }
@@ -341,7 +345,7 @@ public class Shooting : MonoBehaviour
                     }
                 }
             }
-            else
+            else if (hit.collider.gameObject.CompareTag("Untagged"))
             {
                 pickUpText.text = null;
             }
@@ -390,6 +394,12 @@ public class Shooting : MonoBehaviour
                         //Get new item notif
                         GameObject newAch = (GameObject)Instantiate(newAchive, canvas);
                         achiveItem = newAch.GetComponent<NewItemAchv>();
+
+                        GameObject newItem = (GameObject)Instantiate(itemIcon, itemGroup);
+                        itemOnStatus = newItem.GetComponent<ItemOnStatus>();
+                        itemOnStatus.ItemData = disItem.item;
+                        itemOnStatus.itemIcon.sprite = disItem.item.itemSprt;
+
                         achiveItem.nameText.text = disItem.item.name.ToString();
                         achiveItem.descText.text = disItem.item.achiveDesc.ToString();
                         achiveItem.itemImg.sprite = disItem.item.itemSprt;
@@ -450,12 +460,14 @@ public class Shooting : MonoBehaviour
                 vendRenderer = hit.collider.gameObject.GetComponent<MeshRenderer>();
                 vending = hit.collider.gameObject.GetComponent<VendingMachine>();
                 vendRenderer.material.SetColor("_OutlineColor", vending.highlightOutline);
-
+                pickUpText.text = vending.vendingPrice.ToString();
+                
               
 
-                if (Input.GetKeyDown(KeyCode.E)&&!vending.inUse)
+                if (Input.GetKeyDown(KeyCode.E)&&!vending.inUse&&playerMoney.allCoins >= vending.vendingPrice)
                 {
-                    Animator venAnim = hit.collider.gameObject.GetComponent<Animator>();
+                    Animator venAnim = hit.collider.GetComponentInParent<Animator>();
+                    playerMoney.allCoins -= vending.vendingPrice;
                     vending.health -= 1;
                     vending.inUse = true;
                     venAnim.SetTrigger("use");
@@ -463,8 +475,9 @@ public class Shooting : MonoBehaviour
                 }
                 
             }
-            else
+            else if(hit.collider.gameObject.CompareTag("Untagged"))
             {
+                pickUpText.text = null;
                 vendRenderer.material.SetColor("_OutlineColor", vending.normalOutline);
             }
 
@@ -555,22 +568,25 @@ public class Shooting : MonoBehaviour
         {
             case 0:
                 newspaperAmmo -= 1;
-
+                newPaper.newspaperDamage = 1;
                 break;
             case 1:
                 pistolAmmo -= 1;
+                newPaper.newspaperDamage = 2;
 
                 break;
             case 2:
                 smgAmmo -= 1;
-
+                newPaper.newspaperDamage = 3;
                 break;
             case 3:
                 rpgAmmo -= 1;
                 newPaper.rocket = true;
+                newPaper.newspaperDamage = 5;
                 break;
             case 4:
                 dualAmmo -= 1;
+                newPaper.newspaperDamage = 4;
                 break;
 
         }

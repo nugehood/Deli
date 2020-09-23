@@ -13,6 +13,7 @@ TagManager:
   - item
   - option
   - vending
+  - enemy
   layers:
   - Default
   - TransparentFX
