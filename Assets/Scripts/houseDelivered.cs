@@ -5,12 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(Collision))]
 public class houseDelivered : MonoBehaviour
 {
-
+    PlayerBanks playerMoney;
     public bool isDelivered;
     Rigidbody[] rb;
     Newspaper[] bruh;
 
-    
+    private void Start()
+    {
+        playerMoney = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBanks>();
+    }
 
     private void OnCollisionStay(Collision collision)
     {

@@ -5,7 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Ammo : MonoBehaviour
 {
-
+    public int usage;
+    public GameObject paper;
     Shooting shootScript;
     int givenAmmo;
 
@@ -14,21 +15,13 @@ public class Ammo : MonoBehaviour
     {
         shootScript = GameObject.FindObjectOfType<Shooting>();
         givenAmmo = shootScript.newsPaperLimit;
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
+        if(usage <= 0)
         {
-            Debug.Log("Player in!");
-            
+            Destroy(paper);
+            Destroy(this);
+            gameObject.tag = "Untagged";
         }
+
     }
 
-    public void RefillAmmo()
-    {
-        shootScript.newspaperAmmo = givenAmmo;
-        Destroy(gameObject);
-    }
 }

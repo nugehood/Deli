@@ -9,6 +9,7 @@ public class houseStates : MonoBehaviour
 {
     Transform housePosition;
     DeliveryComplete completeDelivery;
+    PlayerBanks playerMoney;
 
     [Space]
     public bool activeHouse;
@@ -31,6 +32,7 @@ public class houseStates : MonoBehaviour
     void Update()
     {
         completeDelivery = GameObject.FindGameObjectWithTag("Player").GetComponent<DeliveryComplete>();
+        playerMoney = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBanks>();
 
         
             
@@ -74,6 +76,7 @@ public class houseStates : MonoBehaviour
 
             if (houseComplete&&!nextDelivery)
             {
+                playerMoney.allCoins += 10;
                 nextHouse.DeliveryComplete();
                 completeDelivery.completeCounter += 1;
                 nextDelivery = true;

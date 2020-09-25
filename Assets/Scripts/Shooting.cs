@@ -15,7 +15,7 @@ public class Shooting : MonoBehaviour
     ItemOnStatus itemOnStatus;
     MouseLook mouseLook;
     VendingMachine vending;
-    MeshRenderer vendRenderer;
+    MeshRenderer vendRenderer, boxRenderer;
 
    [HideInInspector]
     public bool ableToScroll;
@@ -273,16 +273,21 @@ public class Shooting : MonoBehaviour
 
             if (hit.collider.gameObject.CompareTag("ammo"))
             {
+                Ammo amo = hit.collider.gameObject.GetComponent<Ammo>();
+                boxRenderer = hit.collider.gameObject.GetComponent<MeshRenderer>();
+                boxRenderer.material.SetColor("_OutlineColor", Color.yellow);
                 pickUpText.text = "E";
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    
                     switch (scrollIndex)
                     {
                         case 0:
-                            if (newspaperAmmo < newsPaperLimit)
+                            if (newspaperAmmo < newsPaperLimit && playerMoney.allCoins >= 5)
                             {
                                 PickAmmo();
-                                Destroy(hit.collider.gameObject);
+                                amo.usage -= 1;
+                                playerMoney.allCoins -= 5;
                             }
 
                             else
@@ -292,10 +297,11 @@ public class Shooting : MonoBehaviour
                             break;
 
                         case 1:
-                            if (pistolAmmo < pistolLimit)
+                            if (pistolAmmo < pistolLimit && playerMoney.allCoins >= 5)
                             {
                                 PickAmmo();
-                                Destroy(hit.collider.gameObject);
+                                amo.usage -= 1;
+                                playerMoney.allCoins -= 5;
                             }
 
                             else
@@ -304,10 +310,11 @@ public class Shooting : MonoBehaviour
                             }
                             break;
                         case 2:
-                            if (smgAmmo < smgLimit)
+                            if (smgAmmo < smgLimit && playerMoney.allCoins >= 5)
                             {
                                 PickAmmo();
-                                Destroy(hit.collider.gameObject);
+                                amo.usage -= 1;
+                                playerMoney.allCoins -= 5;
                             }
 
                             else
@@ -317,10 +324,11 @@ public class Shooting : MonoBehaviour
                             break;
 
                         case 3:
-                            if (rpgAmmo < rpgLimit)
+                            if (rpgAmmo < rpgLimit && playerMoney.allCoins >= 5)
                             {
                                 PickAmmo();
-                                Destroy(hit.collider.gameObject);
+                                amo.usage -= 1;
+                                playerMoney.allCoins -= 5;
                             }
 
                             else
@@ -330,10 +338,11 @@ public class Shooting : MonoBehaviour
                             break;
 
                         case 4:
-                            if (dualAmmo < dualLimit)
+                            if (dualAmmo < dualLimit && playerMoney.allCoins >= 5)
                             {
                                 PickAmmo();
-                                Destroy(hit.collider.gameObject);
+                                amo.usage -= 1;
+                                playerMoney.allCoins -= 5;
                             }
 
                             else
@@ -348,6 +357,7 @@ public class Shooting : MonoBehaviour
             else if (hit.collider.gameObject.CompareTag("Untagged"))
             {
                 pickUpText.text = null;
+                boxRenderer.material.SetColor("_OutlineColor", Color.black);
             }
 
 
