@@ -33,10 +33,14 @@ public class healthSystem : MonoBehaviour
     public Transform respawnLocation;
     bool isRespawn;
 
+    [Space]
+    public GameObject damagedFX;
+    public GameObject healedFX;
 
     // Start is called before the first frame update
     void Start()
     {
+
         //Start health with the maximum value
         health = maxHealth;
 
@@ -66,7 +70,7 @@ public class healthSystem : MonoBehaviour
 
         if(health <= 0)
         {
-            GameOver();
+            Invoke("GameOver", 0.4f);
         }
         
         if (isRespawn)
@@ -84,15 +88,22 @@ public class healthSystem : MonoBehaviour
         //If Player has entered a hazard GameObject
         if (other.gameObject.CompareTag("hazard"))
         {
-            decreaseHealth();
-            Destroy(other.gameObject);
+            if (health > 0)
+            {
+                decreaseHealth();
+            }
+            Destroy(other.gameObject.transform.parent.gameObject);
         }
 
         //If Player has entered a health GameObject
         else if (other.gameObject.CompareTag("health"))
         {
-            increaseHealth();
-            Destroy(other.gameObject);
+            if (health < 3)
+            {
+                increaseHealth();
+                Destroy(other.gameObject);
+            }
+           
 
         }
     }
@@ -101,6 +112,14 @@ public class healthSystem : MonoBehaviour
     //Changing the sprite of health Images to healthy depends on the health value
     public void increaseHealth()
     {
+        GameObject FX = Instantiate(healedFX, new Vector3(0, 0, 0), Quaternion.identity) as
+           GameObject;
+        Image FXcolor = FX.GetComponent<Image>();
+        var tempColor = FXcolor.color;
+        tempColor.a = 0.3f;
+        tempColor.g = 1f;
+        FXcolor.color = tempColor;
+        FX.transform.SetParent(GameObject.Find("Canvas").transform, false);
         healthImage[health].sprite = healthy;
         health += 1;
         
@@ -112,6 +131,14 @@ public class healthSystem : MonoBehaviour
     public void decreaseHealth()
     {
         health -= 1;
+        GameObject FX = Instantiate(damagedFX, new Vector3(0, 0, 0), Quaternion.identity) as
+            GameObject;
+        Image FXcolor = FX.GetComponent<Image>();
+        var tempColor = FXcolor.color;
+        tempColor.a = 0.3f;
+        tempColor.r = 1f;
+        FXcolor.color = tempColor;
+        FX.transform.SetParent(GameObject.Find("Canvas").transform, false);
         healthImage[health].sprite = damaged;
     }
 

@@ -12,6 +12,7 @@ public class DeliveryComplete : MonoBehaviour
     Shooting shooting;
     public houseStates[] allHouses;
     int i;
+    bool isCompleted;
     public int completeCounter, failedCounter;
     int overallCounter;
     public float playerScore;
@@ -19,6 +20,7 @@ public class DeliveryComplete : MonoBehaviour
 
 
     [Header("UI Components")]
+    public GameObject gameOverNotice;
     public GameObject scoreDisplay;
     public TMP_Text conditionText;
     public TMP_Text deliverText;
@@ -68,21 +70,28 @@ public class DeliveryComplete : MonoBehaviour
 
         if(overallCounter >= i)
         {
+            /*
             GetTime();
+            movement.walk_speed = 0;
             movement.enabled = false;
             cameraMovement.enabled = false;
             pauseScript.enabled = false;
             shooting.enabled = false;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            isCompleted = true;
+            */
+
 
             if (completeCounter > failedCounter)
             {
-                CompleteGame();
+                gameOverNotice.SetActive(true);
+                //Invoke("CompleteGame",3);
             }
             else
             {
-                FailedGame();
+                gameOverNotice.SetActive(true);
+               // Invoke("FailedGame", 3);
             }
         }
 
@@ -90,6 +99,7 @@ public class DeliveryComplete : MonoBehaviour
         {
             timer += Time.deltaTime;
         }
+
     }
     
     public void GetTime()
