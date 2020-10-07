@@ -15,6 +15,7 @@ TagManager:
   - vending
   - enemy
   - box
+  - active
   layers:
   - Default
   - TransparentFX

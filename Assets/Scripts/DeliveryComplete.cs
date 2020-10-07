@@ -10,11 +10,11 @@ public class DeliveryComplete : MonoBehaviour
     MouseLook cameraMovement;
     PauseScript pauseScript;
     Shooting shooting;
-    public houseStates[] allHouses;
-    int i;
+    public GameObject[] activeHouse;
+    public int i;
     bool isCompleted;
     public int completeCounter, failedCounter;
-    int overallCounter;
+    public int overallCounter;
     public float playerScore;
     float timer, finalTimer;
 
@@ -28,10 +28,10 @@ public class DeliveryComplete : MonoBehaviour
     public TMP_Text timeText;
     public TMP_Text scoreText;
 
+
     // Start is called before the first frame update
     void Start()
     {
-
         movement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
 
         pauseScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PauseScript>();
@@ -40,25 +40,17 @@ public class DeliveryComplete : MonoBehaviour
 
         shooting = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Shooting>();
 
-        allHouses = GameObject.FindObjectsOfType<houseStates>();
+       
 
-        foreach (houseStates activehouse in allHouses)
-        {
-            if (activehouse.activeHouse)
-            {
-                i++;
-            }
-        }
-        
+
     }
 
-
+    
     // Update is called once per frame
     void Update()
     {
-
-       
-        
+        activeHouse = GameObject.FindGameObjectsWithTag("active");
+     
         playerScore = completeCounter + 5f - failedCounter / 0.2f;
         playerScore = Mathf.Clamp(playerScore, 0, playerScore);
 
@@ -68,8 +60,6 @@ public class DeliveryComplete : MonoBehaviour
         failText.text = failedCounter.ToString();
         timeText.text = timer.ToString();
 
-        if(overallCounter >= i)
-        {
             /*
             GetTime();
             movement.walk_speed = 0;
@@ -83,17 +73,17 @@ public class DeliveryComplete : MonoBehaviour
             */
 
 
-            if (completeCounter > failedCounter)
+            if (completeCounter > failedCounter && overallCounter >= activeHouse.Length)
+            {
+                gameOverNotice.SetActive(true);
+            }
+            else if(failedCounter > completeCounter && overallCounter >= activeHouse.Length)
             {
                 gameOverNotice.SetActive(true);
                 //Invoke("CompleteGame",3);
             }
-            else
-            {
-                gameOverNotice.SetActive(true);
-               // Invoke("FailedGame", 3);
-            }
-        }
+
+        
 
         else
         {

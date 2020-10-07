@@ -13,27 +13,12 @@ public class houseNavigation : MonoBehaviour
 
     [HideInInspector]
     public int nextHouseNum;
-
+    bool startFirst;
 
     // Start is called before the first frame update
     void Start()
     {
-        houses = GameObject.FindObjectsOfType<houseStates>();
-
-        nextHouseNum = Random.Range(0, houses.Length);
-        if (houses[nextHouseNum].activeHouse && houses[nextHouseNum].enabled && !houses[nextHouseNum].houseComplete
-        && !houses[nextHouseNum].houseFailed)
-        {
-            arrowIndicator.nextHouse = houses[nextHouseNum].transform;
-            houseNumText.text = houses[nextHouseNum].houseNumber.ToString();
-        }
-
-        else
-        {
-
-            Invoke("DeliveryComplete", 0);
-
-        }
+        startFirst = true;
 
 
     }
@@ -42,6 +27,27 @@ public class houseNavigation : MonoBehaviour
     void Update()
     {
         houses = GameObject.FindObjectsOfType<houseStates>();
+        if (startFirst)
+        {
+            
+            houses = GameObject.FindObjectsOfType<houseStates>();
+
+            nextHouseNum = Random.Range(0, houses.Length);
+            if (houses[nextHouseNum].activeHouse && houses[nextHouseNum].enabled && !houses[nextHouseNum].houseComplete
+            && !houses[nextHouseNum].houseFailed)
+            {
+                arrowIndicator.nextHouse = houses[nextHouseNum].transform;
+                houseNumText.text = houses[nextHouseNum].houseNumber.ToString();
+            }
+
+            else
+            {
+
+                Invoke("DeliveryComplete", 0);
+
+            }
+            startFirst = false;
+        }
     }
 
     //If delivery is complete

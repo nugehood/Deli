@@ -21,6 +21,7 @@ public class houseStates : MonoBehaviour
 
     [HideInInspector]
     public bool houseComplete, houseFailed, nextDelivery;
+    bool aHouse;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +32,7 @@ public class houseStates : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        nextHouse = GameObject.Find("Arrow").GetComponent<houseNavigation>();
         completeDelivery = GameObject.FindGameObjectWithTag("Player").GetComponent<DeliveryComplete>();
         playerMoney = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBanks>();
 
@@ -39,7 +41,7 @@ public class houseStates : MonoBehaviour
         //If the house is good for delivery
         if (activeHouse)
         {
-           
+            gameObject.tag = "active";
            
 
             //Check if one of the paper is delivered
